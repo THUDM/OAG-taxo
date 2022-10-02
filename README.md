@@ -10,7 +10,7 @@ We are still in work...
 
 ### Data Preparation
 
-If you want to try the dataset of Mag-CS, Mag-full and our own dataset on these model, we have prepared the dataset here
+If you want to try the dataset of Mag-CS, Mag-full and our own dataset on these model, we have prepared the dataset [here](https://drive.google.com/drive/folders/1Yl5pQKCGytJPgxghs-M4kVzf7bJV200c?usp=sharing)
 
 If you want to try other dataset, you can accpet the methods mentioned in Taxoenrich. In short, you need to prepare the x.terms file, x.taxo file. Next, run the embedding_generation.py and generate_dataset_binary.py, then you can get the x.bin file for training
 

@@ -31,3 +31,5 @@ We provide two infer method for the Artificial Intelligence dataset.
 The Inner Infer means we choose the dataset itself to generate the exsiting graph and test node. Try: `python inner_infer.py --resume path_to_pth --config config_files`. path to pth means the path to your trained model.pth, config_files means your corresponding config files. We have prepared the config.files of three model for you.
 
 The Outer Infer measn we choose the Mag_CS as the exsiting graph and all nodes of Artificial Intelligence node for test. Use the outer_infer.py and the same method.
+
+We provide our trained pth file for you [here](https://drive.google.com/drive/folders/18JacRQeLDAzYA8fA3jSmUlU9tbBA5Mhp?usp=sharing)

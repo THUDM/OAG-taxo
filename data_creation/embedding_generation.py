@@ -23,6 +23,11 @@ import multiprocessing as mp
 from functools import partial
 from collections import defaultdict, deque
 import more_itertools as mit
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--dataset', type=str, default='mag-cs', help='used dataset')
+args = parser.parse_args()
 
 
 def _get_holdout_subgraph(g_full, node_ids):
@@ -243,7 +248,7 @@ def extract_bert_embedding(sentence, key_words, model, tokenizer, device='cuda:0
     return res
 
 
-def main():
+def main(args=args):
     """with open('./data/MAG_FULL/mag_field_of_studies.pickle.20190702.bin', 'rb') as f:
         data = pickle.load(f)
         g_full = data['g_full']
@@ -252,13 +257,36 @@ def main():
         train_node_ids = data["train_node_ids"]
         validation_node_ids = data["validation_node_ids"]
         test_node_ids = data["test_node_ids"]"""
+    if args.dataset == "mag-cs":
+        taxo_data_dir = "./data/MAG_CS"
+        taxo_name = "computer_science"
+        terms_file = "./data/MAG_CS/computer_science.terms"
+        taxo_file = "./data/MAG_CS/computer_science.taxo"
+        emb_file = "./data/MAG_CS/computer_science.terms.embed"
+        bertemb_file = "./data/MAG_CS/computer_science.terms.bertembed"
+    elif args.dataset == "mag-full":
+        taxo_data_dir = "./data/MAG_FULL"
+        taxo_name = "mag_field_of_studies"
+        terms_file = "./data/MAG_FULL/mag_field_of_studies.terms"
+        taxo_file = "./data/MAG_FULL/mag_field_of_studies.taxo"
+        emb_file = "./data/MAG_FULL/mag_field_of_studies.terms.embed"
+        bertemb_file = "./data/MAG_FULL/mag_field_of_studies.terms.bertembed"
+    elif args.dataset == "oag-ai":
+        taxo_data_dir = "./data/OAG_AI"
+        taxo_name = "Artificial Intelligence"
+        terms_file = "./data/OAG_AI/Artificial Intelligence.terms"
+        taxo_file = "./data/OAG_AI/Artificial Intelligence.taxo"
+        emb_file = "./data/OAG_AI/Artificial Intelligence.terms.embed"
+        bertemb_file = "./data/OAG_AI/Artificial Intelligence.terms.bertembed"
+    else:
+        raise NotImplementedError
     taxoid2term = {}
     taxoterm2id = {}
     taxoid2ord = {}
     taxoord2id = {}
     taxoord2term = {}
     ord = 0
-    with open('./data/MAG_FULL/mag_field_of_studies.terms', 'r') as f:
+    with open(terms_file, 'r') as f:
         for lines in f:
             line = lines.strip()
             if line:
@@ -280,7 +308,7 @@ def main():
                 ord += 1
     print("order is ", ord)
     taxonomy = nx.DiGraph()
-    with open('./data/MAG_FULL/mag_field_of_studies.taxo', 'r') as f:
+    with open(taxo_file, 'r') as f:
         for lines in f:
             line = lines.strip()
             if line:
@@ -327,7 +355,7 @@ def main():
         id = nodes[i]
         taxoid2emb[id] = generate_embeddings(taxoid2sent, nodes[i], taxoid2term, model, tokenizer)
 
-    with open('./data/MAG_FULL/mag_field_of_studies.terms.embed', 'w') as f:
+    with open(emb_file, 'w') as f:
         f.write(f"{len(taxoid2emb)} 768\n")
         for ele in sorted(taxoid2emb.items(), key=lambda x: x[0]):
             embed_string = " ".join([str(a.item()) for a in ele[1]])
@@ -340,27 +368,31 @@ def main():
         emb = extract_bert_embedding(name, name, model, tokenizer)
         taxoid2bertemb[node] = emb
 
-    with open('./data/MAG_FULL/mag_field_of_studies.terms.bertembed', 'w') as f:
+    with open(bertemb_file, 'w') as f:
         f.write(f"{len(taxoid2bertemb)} 768\n")
         for ele in sorted(taxoid2bertemb.items(), key=lambda x: x[0]):
             embed_string = " ".join([str(a.item()) for a in ele[1]])
             f.write(f"{ele[0]} {embed_string}\n")
+    
+    # if args.dataset == "oag-ai":
+    #     return
 
-    """with open('./data/MAG_CS/mag_field_of_studies.terms.train', 'w') as f:
-        for node in train_node_ids:
-            id = taxoord2id[node]
-            f.write(f"{id}\t{taxoid2term[id]}\n")
+    # with open(os.path.join(taxo_data_dir, "{}.terms.train".format(taxo_name)), 'w') as f:
+    #     for node in train_node_ids:
+    #         id = taxoord2id[node]
+    #         f.write(f"{id}\t{taxoid2term[id]}\n")
 
-    with open('./data/MAG_CS/mag_field_of_studies.terms.validation', 'w') as f:
-        for node in validation_node_ids:
-            id = taxoord2id[node]
-            f.write(f"{id}\t{taxoid2term[id]}\n")
+    # with open(os.path.join(taxo_data_dir, "{}.terms.validation".format(taxo_name)), 'w') as f:
+    #     for node in validation_node_ids:
+    #         id = taxoord2id[node]
+    #         f.write(f"{id}\t{taxoid2term[id]}\n")
 
-    with open('./data/MAG_CS/mag_field_of_studies.terms.test', 'w') as f:
-        for node in test_node_ids:
-            id = taxoord2id[node]
-            f.write(f"{id}\t{taxoid2term[id]}\n")"""
+    # with open(os.path.join(taxo_data_dir, "{}.terms.test".format(taxo_name)), 'w') as f:
+    #     for node in test_node_ids:
+    #         id = taxoord2id[node]
+    #         f.write(f"{id}\t{taxoid2term[id]}\n")
 
 
 if __name__ == "__main__":
-    main()
+    print("dataset", args.dataset)
+    main(args=args)

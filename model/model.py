@@ -271,3 +271,15 @@ class ExpanMatchModel(BaseModel, AbstractPathModel, AbstractGraphModel):
         ur = self.forward_encoders(us, graphs, paths, lens)
         scores = self.match(ur, qf)
         return scores
+
+
+class BaseMatch(BaseModel):
+    def __init__(self, mode):
+        super(BaseMatch, self).__init__()
+        self.model = BIM(768, 768)
+
+    def forward(self, q, e1, e2):
+        q = self.embedding(q)
+        e1 = self.embedding(e1)
+        e2 = self.embedding(e2)
+        return self.model(e1, e2, q)

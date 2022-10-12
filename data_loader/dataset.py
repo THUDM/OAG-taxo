@@ -1028,6 +1028,7 @@ class ExpanDataset(GraphPathDataset):
         self.test_topk = test_topk
 
         self.node_features = graph_dataset.g_full.ndata['x']
+        self.input_features = graph_dataset.g_full.ndata['y']
         full_graph = graph_dataset.g_full.to_networkx()
         train_node_ids = graph_dataset.train_node_ids
         roots = [node for node in full_graph.nodes() if full_graph.in_degree(node) == 0]

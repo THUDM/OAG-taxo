@@ -220,14 +220,30 @@ class TrainerB(TrainerS):
         for batch_idx, batch in enumerate(self.data_loader):
             nf, label, u, v, sib, bgu, bgv, bpu, bpv, lens, sib_s = batch
             self.optimizer.zero_grad()
+            u = u.to(self.device)
+            v = v.to(self.device)
+            nf = nf.to(self.device)
             score = self.model(nf, u, v)
             label = label.to(self.device)
-            loss = self.loss(score, label)
+            loss = self.loss(score, label[:, 0])
             loss.backward()
             self.optimizer.step()
             total_loss += loss.item()
 
         log = {'loss': total_loss / len(self.data_loader)}
+
+        if self.do_validation:
+            val_log = {'val_metrics': self._test('validation')}
+            log = {**log, **val_log}
+
+        if self.lr_scheduler is not None:
+            if isinstance(self.lr_scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
+                if self.lr_scheduler_mode == "min":
+                    self.lr_scheduler.step(log['val_metrics'][0])
+                else:
+                    self.lr_scheduler.step(log['val_metrics'][-1])
+            else:
+                self.lr_scheduler.step()
         return log
 
     def _test(self, mode, gpu=True):
@@ -293,7 +309,7 @@ class TrainerB(TrainerS):
                     hs = hs.to(self.device)
                     sib_len = sib_len.to(self.device)
                     hs_attn = model.attention(ur, vr, hs, sib_len, expanded_nf)
-                    energy_scores = model.match(ur, vr, hs_attn, expanded_nf)
+                    energy_scores = model.score(ur, vr, expanded_nf)
                     batched_energy_scores.append(energy_scores)
                 batched_energy_scores = torch.cat(batched_energy_scores)
                 batched_energy_scores, labels = rearrange(batched_energy_scores, candidate_positions, node2pos[query])

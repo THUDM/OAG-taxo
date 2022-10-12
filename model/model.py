@@ -283,3 +283,7 @@ class BaseMatch(BaseModel):
         e1 = self.embedding(e1)
         e2 = self.embedding(e2)
         return self.model(e1, e2, q)
+
+    def score(self, q, e1, e2):
+        return self.model(e1, e2, q)
+

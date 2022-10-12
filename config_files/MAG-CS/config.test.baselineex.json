@@ -1,7 +1,7 @@
 {
     "name": "ExpanMatchModel",
     "n_gpu": 1,
-    "data_path": "./data/MAG_CS/computer_science.pickle.bin",
+    "data_path": "/home/ayw19/taxoenrich/data/MAG_CS/computer_science.pickle.bin",
     "mode": "r",
     "arch": {
         "type": "ExpanMatchModel",

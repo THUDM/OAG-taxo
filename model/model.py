@@ -287,3 +287,6 @@ class BaseMatch(BaseModel):
     def score(self, q, e1, e2):
         return self.model(e1, e2, q)
 
+    def forward_encoders(self, us, vs, sib, bgu, bgv, bpu, bpv, lens, sib_len):
+        return self.embedding(us), self.embedding(vs), None
+

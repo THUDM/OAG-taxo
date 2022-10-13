@@ -1,0 +1,1139 @@
+(/home/ayw19/cuda10) ayw19@thudm-SYS-4028GR-TR:~/oag-taxo$ python train.py --config ./config_files/MAG-CS/config.test.baseline.json
+Using backend: pytorch
+number of trials: 1
+Finish loading dataset (47.61664056777954 seconds)
+UnifiedDataLoader mode: rps
+	sampling_mode: 1
+	batch_size: 2
+	negative_size: 31
+	expand_factor: 40
+	cache_refresh_time: 64
+	normalize_embed: True
+	number_of_sib: 5
+BaseMatch(
+  (model): BIM(
+    (W): Bilinear(in1_features=1536, in2_features=768, out_features=1, bias=False)
+  )
+  (embedding): Embedding(29655, 768)
+  (bert_embedding): Embedding(29655, 768)
+)
+Trainable parameters: 1179648
+cuda:0
+Warning: TensorboardX visualization is configured to use, but currently not installed on this machine. Please install the package by 'pip install tensorboardx' command or turn off the option in the 'config.json' file.
+Train Epoch: 1 [0/27653 (0%)] Loss: 0.6964
+Train Epoch: 1 [5530/27653 (20%)] Loss: 0.0255
+Train Epoch: 1 [11060/27653 (40%)] Loss: 0.0108
+Train Epoch: 1 [16590/27653 (60%)] Loss: 0.0156
+Train Epoch: 1 [22120/27653 (80%)] Loss: 0.0429
+Train Epoch: 1 [27650/27653 (100%)] Loss: 0.0072
+Train Epoch: 1 [27652/27653 (100%)] Loss: 0.0156
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:16,  2.37it/s]
+testing: 0it [00:00, ?it/s]
+Traceback (most recent call last):
+  File "train.py", line 121, in <module>
+    res = main(config)
+  File "train.py", line 55, in main
+    evaluations = trainer.train()
+  File "/home/ayw19/oag-taxo/base/base_trainer.py", line 89, in train
+    result = self._train_epoch(epoch)
+  File "/home/ayw19/oag-taxo/trainer/trainer.py", line 240, in _train_epoch
+    val_log = {'val_metrics': self._test('validation')}
+  File "/home/ayw19/oag-taxo/trainer/trainer.py", line 310, in _test
+    hs = hs.to(self.device)
+UnboundLocalError: local variable 'hs' referenced before assignment
+(/home/ayw19/cuda10) ayw19@thudm-SYS-4028GR-TR:~/oag-taxo$ python train.py --config ./config_files/MAG-CS/config.test.baseline.json
+Using backend: pytorch
+number of trials: 1
+Finish loading dataset (45.63366723060608 seconds)
+UnifiedDataLoader mode: rps
+	sampling_mode: 1
+	batch_size: 2
+	negative_size: 31
+	expand_factor: 40
+	cache_refresh_time: 64
+	normalize_embed: True
+	number_of_sib: 5
+BaseMatch(
+  (model): BIM(
+    (W): Bilinear(in1_features=1536, in2_features=768, out_features=1, bias=False)
+  )
+  (embedding): Embedding(29655, 768)
+  (bert_embedding): Embedding(29655, 768)
+)
+Trainable parameters: 1179648
+cuda:0
+Warning: TensorboardX visualization is configured to use, but currently not installed on this machine. Please install the package by 'pip install tensorboardx' command or turn off the option in the 'config.json' file.
+Train Epoch: 1 [0/27653 (0%)] Loss: 0.6920
+Train Epoch: 1 [5530/27653 (20%)] Loss: 0.0151
+Train Epoch: 1 [11060/27653 (40%)] Loss: 0.0247
+Train Epoch: 1 [16590/27653 (60%)] Loss: 0.0063
+Train Epoch: 1 [22120/27653 (80%)] Loss: 0.0137
+Train Epoch: 1 [27650/27653 (100%)] Loss: 0.0524
+Train Epoch: 1 [27652/27653 (100%)] Loss: 0.0192
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:19,  2.03it/s]
+testing: 1000it [07:00,  2.38it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 1
+    loss           : 0.03487564278841614
+    val_macro_mr   : 3518.243945238095
+    val_micro_mr   : 3621.569008782936
+    val_hit_at_1   : 0.0
+    val_hit_at_5   : 0.0
+    val_hit_at_10  : 0.0006273525721455458
+    val_precision_at_1: 0.0
+    val_precision_at_5: 0.0
+    val_precision_at_10: 0.0001
+    val_mrr_scaled_10: 0.015103341498967833
+Saving current best: model_best.pth ...
+Train Epoch: 2 [0/27653 (0%)] Loss: 0.0183
+Train Epoch: 2 [5530/27653 (20%)] Loss: 0.0229
+Train Epoch: 2 [11060/27653 (40%)] Loss: 0.0206
+Train Epoch: 2 [16590/27653 (60%)] Loss: 0.0031
+Train Epoch: 2 [22120/27653 (80%)] Loss: 0.0188
+Train Epoch: 2 [27650/27653 (100%)] Loss: 0.0235
+Train Epoch: 2 [27652/27653 (100%)] Loss: 0.0013
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:21,  1.82it/s]
+testing: 1000it [06:53,  2.42it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 2
+    loss           : 0.019686015666527275
+    val_macro_mr   : 3349.2117000000003
+    val_micro_mr   : 3537.7107904642407
+    val_hit_at_1   : 0.0
+    val_hit_at_5   : 0.0
+    val_hit_at_10  : 0.0
+    val_precision_at_1: 0.0
+    val_precision_at_5: 0.0
+    val_precision_at_10: 0.0
+    val_mrr_scaled_10: 0.018327885251595663
+Saving current best: model_best.pth ...
+Train Epoch: 3 [0/27653 (0%)] Loss: 0.0051
+Train Epoch: 3 [5530/27653 (20%)] Loss: 0.0075
+Train Epoch: 3 [11060/27653 (40%)] Loss: 0.0176
+Train Epoch: 3 [16590/27653 (60%)] Loss: 0.0261
+Train Epoch: 3 [22120/27653 (80%)] Loss: 0.0390
+Train Epoch: 3 [27650/27653 (100%)] Loss: 0.0050
+Train Epoch: 3 [27652/27653 (100%)] Loss: 0.0024
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:20,  1.92it/s]
+testing: 1000it [06:57,  2.40it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 3
+    loss           : 0.01605867476287432
+    val_macro_mr   : 2355.9870499999997
+    val_micro_mr   : 2501.1135508155585
+    val_hit_at_1   : 0.0
+    val_hit_at_5   : 0.0037641154328732747
+    val_hit_at_10  : 0.0056461731493099125
+    val_precision_at_1: 0.0
+    val_precision_at_5: 0.0012
+    val_precision_at_10: 0.0009
+    val_mrr_scaled_10: 0.03844769954112927
+Saving current best: model_best.pth ...
+Train Epoch: 4 [0/27653 (0%)] Loss: 0.0015
+Train Epoch: 4 [5530/27653 (20%)] Loss: 0.0060
+Train Epoch: 4 [11060/27653 (40%)] Loss: 0.0033
+Train Epoch: 4 [16590/27653 (60%)] Loss: 0.0140
+Train Epoch: 4 [22120/27653 (80%)] Loss: 0.0077
+Train Epoch: 4 [27650/27653 (100%)] Loss: 0.0042
+Train Epoch: 4 [27652/27653 (100%)] Loss: 0.0320
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:20,  1.98it/s]
+testing: 1000it [06:58,  2.39it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 4
+    loss           : 0.014188811712626754
+    val_macro_mr   : 2089.5689214285717
+    val_micro_mr   : 2217.921580928482
+    val_hit_at_1   : 0.0
+    val_hit_at_5   : 0.00439146800501882
+    val_hit_at_10  : 0.00878293601003764
+    val_precision_at_1: 0.0
+    val_precision_at_5: 0.0014
+    val_precision_at_10: 0.0014
+    val_mrr_scaled_10: 0.04413616757967881
+Saving current best: model_best.pth ...
+Train Epoch: 5 [0/27653 (0%)] Loss: 0.0072
+Train Epoch: 5 [5530/27653 (20%)] Loss: 0.0029
+Train Epoch: 5 [11060/27653 (40%)] Loss: 0.0015
+Train Epoch: 5 [16590/27653 (60%)] Loss: 0.0051
+Train Epoch: 5 [22120/27653 (80%)] Loss: 0.0229
+Train Epoch: 5 [27650/27653 (100%)] Loss: 0.0051
+Train Epoch: 5 [27652/27653 (100%)] Loss: 0.0046
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:18,  2.14it/s]
+testing: 1000it [07:00,  2.38it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 5
+    loss           : 0.0125678601521199
+    val_macro_mr   : 1909.2735261904763
+    val_micro_mr   : 2042.4730238393977
+    val_hit_at_1   : 0.0006273525721455458
+    val_hit_at_5   : 0.00439146800501882
+    val_hit_at_10  : 0.010037641154328732
+    val_precision_at_1: 0.001
+    val_precision_at_5: 0.0014
+    val_precision_at_10: 0.0016
+    val_mrr_scaled_10: 0.052280952321445584
+Saving current best: model_best.pth ...
+Train Epoch: 6 [0/27653 (0%)] Loss: 0.0018
+Train Epoch: 6 [5530/27653 (20%)] Loss: 0.0026
+Train Epoch: 6 [11060/27653 (40%)] Loss: 0.0106
+Train Epoch: 6 [16590/27653 (60%)] Loss: 0.0019
+Train Epoch: 6 [22120/27653 (80%)] Loss: 0.0017
+Train Epoch: 6 [27650/27653 (100%)] Loss: 0.0047
+Train Epoch: 6 [27652/27653 (100%)] Loss: 0.0117
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:20,  2.00it/s]
+testing: 1000it [07:12,  2.31it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 6
+    loss           : 0.01187534596275001
+    val_macro_mr   : 1729.8338785714286
+    val_micro_mr   : 1862.994981179423
+    val_hit_at_1   : 0.0012547051442910915
+    val_hit_at_5   : 0.008155583437892095
+    val_hit_at_10  : 0.015056461731493099
+    val_precision_at_1: 0.002
+    val_precision_at_5: 0.0026
+    val_precision_at_10: 0.0024
+    val_mrr_scaled_10: 0.0656158956256369
+Saving current best: model_best.pth ...
+Train Epoch: 7 [0/27653 (0%)] Loss: 0.0458
+Train Epoch: 7 [5530/27653 (20%)] Loss: 0.0072
+Train Epoch: 7 [11060/27653 (40%)] Loss: 0.0056
+Train Epoch: 7 [16590/27653 (60%)] Loss: 0.0146
+Train Epoch: 7 [22120/27653 (80%)] Loss: 0.0060
+Train Epoch: 7 [27650/27653 (100%)] Loss: 0.0172
+Train Epoch: 7 [27652/27653 (100%)] Loss: 0.0095
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:20,  1.92it/s]
+testing: 1000it [07:04,  2.35it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 7
+    loss           : 0.011181271103827353
+    val_macro_mr   : 1636.4147999999998
+    val_micro_mr   : 1781.0865746549562
+    val_hit_at_1   : 0.0006273525721455458
+    val_hit_at_5   : 0.0075282308657465494
+    val_hit_at_10  : 0.014429109159347553
+    val_precision_at_1: 0.001
+    val_precision_at_5: 0.0024
+    val_precision_at_10: 0.0023
+    val_mrr_scaled_10: 0.06622649498381727
+Saving current best: model_best.pth ...
+Train Epoch: 8 [0/27653 (0%)] Loss: 0.0016
+Train Epoch: 8 [5530/27653 (20%)] Loss: 0.0023
+Train Epoch: 8 [11060/27653 (40%)] Loss: 0.0020
+Train Epoch: 8 [16590/27653 (60%)] Loss: 0.0021
+Train Epoch: 8 [22120/27653 (80%)] Loss: 0.0048
+Train Epoch: 8 [27650/27653 (100%)] Loss: 0.0167
+Train Epoch: 8 [27652/27653 (100%)] Loss: 0.0003
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:19,  2.08it/s]
+testing: 1000it [06:52,  2.43it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 8
+    loss           : 0.010783087122196947
+    val_macro_mr   : 1377.0528666666667
+    val_micro_mr   : 1505.5809284818067
+    val_hit_at_1   : 0.0012547051442910915
+    val_hit_at_5   : 0.01191969887076537
+    val_hit_at_10  : 0.023212045169385194
+    val_precision_at_1: 0.002
+    val_precision_at_5: 0.0038
+    val_precision_at_10: 0.0037
+    val_mrr_scaled_10: 0.08258385187557879
+Saving current best: model_best.pth ...
+Train Epoch: 9 [0/27653 (0%)] Loss: 0.0629
+Train Epoch: 9 [5530/27653 (20%)] Loss: 0.0053
+Train Epoch: 9 [11060/27653 (40%)] Loss: 0.0036
+Train Epoch: 9 [16590/27653 (60%)] Loss: 0.0079
+Train Epoch: 9 [22120/27653 (80%)] Loss: 0.0069
+Train Epoch: 9 [27650/27653 (100%)] Loss: 0.0075
+Train Epoch: 9 [27652/27653 (100%)] Loss: 0.0014
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:17,  2.30it/s]
+testing: 1000it [07:04,  2.36it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 9
+    loss           : 0.009988928503968746
+    val_macro_mr   : 1273.0187047619047
+    val_micro_mr   : 1384.9272271016312
+    val_hit_at_1   : 0.0018820577164366374
+    val_hit_at_5   : 0.012547051442910916
+    val_hit_at_10  : 0.026348808030112924
+    val_precision_at_1: 0.003
+    val_precision_at_5: 0.004
+    val_precision_at_10: 0.0042
+    val_mrr_scaled_10: 0.09660143530983349
+Saving current best: model_best.pth ...
+Train Epoch: 10 [0/27653 (0%)] Loss: 0.0097
+Train Epoch: 10 [5530/27653 (20%)] Loss: 0.0012
+Train Epoch: 10 [11060/27653 (40%)] Loss: 0.0126
+Train Epoch: 10 [16590/27653 (60%)] Loss: 0.0047
+Train Epoch: 10 [22120/27653 (80%)] Loss: 0.0016
+Train Epoch: 10 [27650/27653 (100%)] Loss: 0.0018
+Train Epoch: 10 [27652/27653 (100%)] Loss: 0.0061
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:21,  1.90it/s]
+testing: 1000it [06:51,  2.43it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 10
+    loss           : 0.009461995055623035
+    val_macro_mr   : 1433.904754761905
+    val_micro_mr   : 1575.2471769134254
+    val_hit_at_1   : 0.0012547051442910915
+    val_hit_at_5   : 0.01066499372647428
+    val_hit_at_10  : 0.020075282308657464
+    val_precision_at_1: 0.002
+    val_precision_at_5: 0.0034
+    val_precision_at_10: 0.0032
+    val_mrr_scaled_10: 0.08130046975320622
+Train Epoch: 11 [0/27653 (0%)] Loss: 0.0145
+Train Epoch: 11 [5530/27653 (20%)] Loss: 0.0181
+Train Epoch: 11 [11060/27653 (40%)] Loss: 0.0015
+Train Epoch: 11 [16590/27653 (60%)] Loss: 0.0029
+Train Epoch: 11 [22120/27653 (80%)] Loss: 0.0088
+Train Epoch: 11 [27650/27653 (100%)] Loss: 0.0013
+Train Epoch: 11 [27652/27653 (100%)] Loss: 0.0582
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:21,  1.85it/s]
+testing: 1000it [07:34,  2.20it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 11
+    loss           : 0.009230629817371007
+    val_macro_mr   : 1513.3198047619048
+    val_micro_mr   : 1667.323086574655
+    val_hit_at_1   : 0.0012547051442910915
+    val_hit_at_5   : 0.00878293601003764
+    val_hit_at_10  : 0.018820577164366373
+    val_precision_at_1: 0.002
+    val_precision_at_5: 0.0028
+    val_precision_at_10: 0.003
+    val_mrr_scaled_10: 0.07699001104735699
+Train Epoch: 12 [0/27653 (0%)] Loss: 0.0048
+Train Epoch: 12 [5530/27653 (20%)] Loss: 0.0032
+Train Epoch: 12 [11060/27653 (40%)] Loss: 0.0012
+Train Epoch: 12 [16590/27653 (60%)] Loss: 0.0219
+Train Epoch: 12 [22120/27653 (80%)] Loss: 0.0151
+Train Epoch: 12 [27650/27653 (100%)] Loss: 0.0060
+Train Epoch: 12 [27652/27653 (100%)] Loss: 0.0006
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:18,  2.15it/s]
+testing: 1000it [07:24,  2.25it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 12
+    loss           : 0.009004373671200104
+    val_macro_mr   : 1406.078080952381
+    val_micro_mr   : 1553.4215809284817
+    val_hit_at_1   : 0.0012547051442910915
+    val_hit_at_5   : 0.012547051442910916
+    val_hit_at_10  : 0.02258469259723965
+    val_precision_at_1: 0.002
+    val_precision_at_5: 0.004
+    val_precision_at_10: 0.0036
+    val_mrr_scaled_10: 0.08364179506348221
+Train Epoch: 13 [0/27653 (0%)] Loss: 0.0058
+Train Epoch: 13 [5530/27653 (20%)] Loss: 0.0030
+Train Epoch: 13 [11060/27653 (40%)] Loss: 0.0203
+Train Epoch: 13 [16590/27653 (60%)] Loss: 0.0016
+Train Epoch: 13 [22120/27653 (80%)] Loss: 0.0005
+Train Epoch: 13 [27650/27653 (100%)] Loss: 0.0018
+Train Epoch: 13 [27652/27653 (100%)] Loss: 0.0012
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:19,  2.06it/s]
+testing: 1000it [07:52,  2.12it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 13
+    loss           : 0.008698070505156917
+    val_macro_mr   : 1122.1959785714284
+    val_micro_mr   : 1230.1493099121706
+    val_hit_at_1   : 0.0012547051442910915
+    val_hit_at_5   : 0.01819322459222083
+    val_hit_at_10  : 0.04077791718946048
+    val_precision_at_1: 0.002
+    val_precision_at_5: 0.0058
+    val_precision_at_10: 0.0065
+    val_mrr_scaled_10: 0.11329991796994084
+Saving current best: model_best.pth ...
+Train Epoch: 14 [0/27653 (0%)] Loss: 0.0014
+Train Epoch: 14 [5530/27653 (20%)] Loss: 0.0034
+Train Epoch: 14 [11060/27653 (40%)] Loss: 0.0031
+Train Epoch: 14 [16590/27653 (60%)] Loss: 0.0048
+Train Epoch: 14 [22120/27653 (80%)] Loss: 0.0010
+Train Epoch: 14 [27650/27653 (100%)] Loss: 0.0080
+Train Epoch: 14 [27652/27653 (100%)] Loss: 0.0400
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:19,  2.02it/s]
+testing: 1000it [07:34,  2.20it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 14
+    loss           : 0.008176815103852856
+    val_macro_mr   : 1426.6251809523808
+    val_micro_mr   : 1578.4749058971142
+    val_hit_at_1   : 0.0012547051442910915
+    val_hit_at_5   : 0.012547051442910916
+    val_hit_at_10  : 0.02132998745294856
+    val_precision_at_1: 0.002
+    val_precision_at_5: 0.004
+    val_precision_at_10: 0.0034
+    val_mrr_scaled_10: 0.08546659743682276
+Train Epoch: 15 [0/27653 (0%)] Loss: 0.0014
+Train Epoch: 15 [5530/27653 (20%)] Loss: 0.0066
+Train Epoch: 15 [11060/27653 (40%)] Loss: 0.0034
+Train Epoch: 15 [16590/27653 (60%)] Loss: 0.0044
+Train Epoch: 15 [22120/27653 (80%)] Loss: 0.0021
+Train Epoch: 15 [27650/27653 (100%)] Loss: 0.0029
+Train Epoch: 15 [27652/27653 (100%)] Loss: 0.0005
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:20,  1.98it/s]
+testing: 1000it [07:48,  2.13it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 15
+    loss           : 0.008153537202217995
+    val_macro_mr   : 1278.896980952381
+    val_micro_mr   : 1407.990589711418
+    val_hit_at_1   : 0.0012547051442910915
+    val_hit_at_5   : 0.01191969887076537
+    val_hit_at_10  : 0.020075282308657464
+    val_precision_at_1: 0.002
+    val_precision_at_5: 0.0038
+    val_precision_at_10: 0.0032
+    val_mrr_scaled_10: 0.08963406644680384
+Train Epoch: 16 [0/27653 (0%)] Loss: 0.0008
+Train Epoch: 16 [5530/27653 (20%)] Loss: 0.0045
+Train Epoch: 16 [11060/27653 (40%)] Loss: 0.0021
+Train Epoch: 16 [16590/27653 (60%)] Loss: 0.0035
+Train Epoch: 16 [22120/27653 (80%)] Loss: 0.0050
+Train Epoch: 16 [27650/27653 (100%)] Loss: 0.0024
+Train Epoch: 16 [27652/27653 (100%)] Loss: 0.0177
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:19,  2.05it/s]
+testing: 1000it [07:35,  2.20it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 16
+    loss           : 0.007845658007657505
+    val_macro_mr   : 1182.0855285714288
+    val_micro_mr   : 1309.83626097867
+    val_hit_at_1   : 0.0012547051442910915
+    val_hit_at_5   : 0.01631116687578419
+    val_hit_at_10  : 0.027603513174404015
+    val_precision_at_1: 0.002
+    val_precision_at_5: 0.0052
+    val_precision_at_10: 0.0044
+    val_mrr_scaled_10: 0.1011436564390261
+Train Epoch: 17 [0/27653 (0%)] Loss: 0.0008
+Train Epoch: 17 [5530/27653 (20%)] Loss: 0.0010
+Train Epoch: 17 [11060/27653 (40%)] Loss: 0.0031
+Train Epoch: 17 [16590/27653 (60%)] Loss: 0.0135
+Train Epoch: 17 [22120/27653 (80%)] Loss: 0.0063
+Train Epoch: 17 [27650/27653 (100%)] Loss: 0.0005
+Train Epoch: 17 [27652/27653 (100%)] Loss: 0.0120
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:19,  2.00it/s]
+testing: 1000it [07:37,  2.19it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 17
+    loss           : 0.007600336824369913
+    val_macro_mr   : 1133.0737
+    val_micro_mr   : 1251.1781681304894
+    val_hit_at_1   : 0.0012547051442910915
+    val_hit_at_5   : 0.015056461731493099
+    val_hit_at_10  : 0.028858218318695106
+    val_precision_at_1: 0.002
+    val_precision_at_5: 0.0048
+    val_precision_at_10: 0.0046
+    val_mrr_scaled_10: 0.1040185622292699
+Train Epoch: 18 [0/27653 (0%)] Loss: 0.0018
+Train Epoch: 18 [5530/27653 (20%)] Loss: 0.0012
+Train Epoch: 18 [11060/27653 (40%)] Loss: 0.0004
+Train Epoch: 18 [16590/27653 (60%)] Loss: 0.0099
+Train Epoch: 18 [22120/27653 (80%)] Loss: 0.0204
+Train Epoch: 18 [27650/27653 (100%)] Loss: 0.0028
+Train Epoch: 18 [27652/27653 (100%)] Loss: 0.0004
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:18,  2.12it/s]
+testing: 1000it [07:37,  2.19it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 18
+    loss           : 0.007614907307089626
+    val_macro_mr   : 1068.2174476190478
+    val_micro_mr   : 1180.8343789209537
+    val_hit_at_1   : 0.0018820577164366374
+    val_hit_at_5   : 0.016938519447929738
+    val_hit_at_10  : 0.03262233375156838
+    val_precision_at_1: 0.003
+    val_precision_at_5: 0.0054
+    val_precision_at_10: 0.0052
+    val_mrr_scaled_10: 0.11134955409951298
+Saving current best: model_best.pth ...
+Train Epoch: 19 [0/27653 (0%)] Loss: 0.0024
+Train Epoch: 19 [5530/27653 (20%)] Loss: 0.0018
+Train Epoch: 19 [11060/27653 (40%)] Loss: 0.0031
+Train Epoch: 19 [16590/27653 (60%)] Loss: 0.0003
+Train Epoch: 19 [22120/27653 (80%)] Loss: 0.0036
+Train Epoch: 19 [27650/27653 (100%)] Loss: 0.0213
+Train Epoch: 19 [27652/27653 (100%)] Loss: 0.0002
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:22,  1.82it/s]
+testing: 1000it [07:36,  2.19it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 19
+    loss           : 0.007233843301544736
+    val_macro_mr   : 1155.216254761905
+    val_micro_mr   : 1283.8048933500627
+    val_hit_at_1   : 0.0018820577164366374
+    val_hit_at_5   : 0.014429109159347553
+    val_hit_at_10  : 0.033249686323713924
+    val_precision_at_1: 0.003
+    val_precision_at_5: 0.0046
+    val_precision_at_10: 0.0053
+    val_mrr_scaled_10: 0.10488682118019188
+Train Epoch: 20 [0/27653 (0%)] Loss: 0.0009
+Train Epoch: 20 [5530/27653 (20%)] Loss: 0.0037
+Train Epoch: 20 [11060/27653 (40%)] Loss: 0.0776
+Train Epoch: 20 [16590/27653 (60%)] Loss: 0.0087
+Train Epoch: 20 [22120/27653 (80%)] Loss: 0.0014
+Train Epoch: 20 [27650/27653 (100%)] Loss: 0.0051
+Train Epoch: 20 [27652/27653 (100%)] Loss: 0.0008
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:22,  1.79it/s]
+testing: 1000it [07:36,  2.19it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 20
+    loss           : 0.007178043022720184
+    val_macro_mr   : 1005.1143333333333
+    val_micro_mr   : 1131.2590966122962
+    val_hit_at_1   : 0.003136762860727729
+    val_hit_at_5   : 0.02070263488080301
+    val_hit_at_10  : 0.04203262233375157
+    val_precision_at_1: 0.005
+    val_precision_at_5: 0.0066
+    val_precision_at_10: 0.0067
+    val_mrr_scaled_10: 0.12213154509648771
+Saving current best: model_best.pth ...
+Train Epoch: 21 [0/27653 (0%)] Loss: 0.0044
+Train Epoch: 21 [5530/27653 (20%)] Loss: 0.0004
+Train Epoch: 21 [11060/27653 (40%)] Loss: 0.0007
+Train Epoch: 21 [16590/27653 (60%)] Loss: 0.0025
+Train Epoch: 21 [22120/27653 (80%)] Loss: 0.0095
+Train Epoch: 21 [27650/27653 (100%)] Loss: 0.0217
+Train Epoch: 21 [27652/27653 (100%)] Loss: 0.0052
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:17,  2.25it/s]
+testing: 1000it [07:49,  2.13it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 21
+    loss           : 0.007062826673188132
+    val_macro_mr   : 1064.8346428571426
+    val_micro_mr   : 1194.0978670012546
+    val_hit_at_1   : 0.0018820577164366374
+    val_hit_at_5   : 0.015683814303638646
+    val_hit_at_10  : 0.03513174404015056
+    val_precision_at_1: 0.003
+    val_precision_at_5: 0.005
+    val_precision_at_10: 0.0056
+    val_mrr_scaled_10: 0.11345171017603119
+Train Epoch: 22 [0/27653 (0%)] Loss: 0.0069
+Train Epoch: 22 [5530/27653 (20%)] Loss: 0.0009
+Train Epoch: 22 [11060/27653 (40%)] Loss: 0.0170
+Train Epoch: 22 [16590/27653 (60%)] Loss: 0.0017
+Train Epoch: 22 [22120/27653 (80%)] Loss: 0.0111
+Train Epoch: 22 [27650/27653 (100%)] Loss: 0.0049
+Train Epoch: 22 [27652/27653 (100%)] Loss: 0.0015
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:16,  2.49it/s]
+testing: 1000it [06:01,  2.76it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 22
+    loss           : 0.00683419358914821
+    val_macro_mr   : 1054.22205
+    val_micro_mr   : 1181.6938519447929
+    val_hit_at_1   : 0.0018820577164366374
+    val_hit_at_5   : 0.015683814303638646
+    val_hit_at_10  : 0.03513174404015056
+    val_precision_at_1: 0.003
+    val_precision_at_5: 0.005
+    val_precision_at_10: 0.0056
+    val_mrr_scaled_10: 0.10950178085621258
+Train Epoch: 23 [0/27653 (0%)] Loss: 0.0020
+Train Epoch: 23 [5530/27653 (20%)] Loss: 0.0034
+Train Epoch: 23 [11060/27653 (40%)] Loss: 0.0062
+Train Epoch: 23 [16590/27653 (60%)] Loss: 0.0242
+Train Epoch: 23 [22120/27653 (80%)] Loss: 0.0016
+Train Epoch: 23 [27650/27653 (100%)] Loss: 0.0257
+Train Epoch: 23 [27652/27653 (100%)] Loss: 0.0089
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:15,  2.66it/s]
+testing: 1000it [05:42,  2.92it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 23
+    loss           : 0.006850562850060682
+    val_macro_mr   : 948.4952714285715
+    val_micro_mr   : 1066.5112923462987
+    val_hit_at_1   : 0.0018820577164366374
+    val_hit_at_5   : 0.025094102885821833
+    val_hit_at_10  : 0.04705144291091593
+    val_precision_at_1: 0.003
+    val_precision_at_5: 0.008
+    val_precision_at_10: 0.0075
+    val_mrr_scaled_10: 0.13021404408999826
+Saving current best: model_best.pth ...
+Train Epoch: 24 [0/27653 (0%)] Loss: 0.0017
+Train Epoch: 24 [5530/27653 (20%)] Loss: 0.0006
+Train Epoch: 24 [11060/27653 (40%)] Loss: 0.0193
+Train Epoch: 24 [16590/27653 (60%)] Loss: 0.0010
+Train Epoch: 24 [22120/27653 (80%)] Loss: 0.0019
+Train Epoch: 24 [27650/27653 (100%)] Loss: 0.0129
+Train Epoch: 24 [27652/27653 (100%)] Loss: 0.0030
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:16,  2.46it/s]
+testing: 1000it [05:59,  2.78it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 24
+    loss           : 0.006825419135199564
+    val_macro_mr   : 979.7786666666666
+    val_micro_mr   : 1097.9918444165621
+    val_hit_at_1   : 0.0018820577164366374
+    val_hit_at_5   : 0.018820577164366373
+    val_hit_at_10  : 0.045796737766624844
+    val_precision_at_1: 0.003
+    val_precision_at_5: 0.006
+    val_precision_at_10: 0.0073
+    val_mrr_scaled_10: 0.12509828417966382
+Train Epoch: 25 [0/27653 (0%)] Loss: 0.0059
+Train Epoch: 25 [5530/27653 (20%)] Loss: 0.0010
+Train Epoch: 25 [11060/27653 (40%)] Loss: 0.0049
+Train Epoch: 25 [16590/27653 (60%)] Loss: 0.0018
+Train Epoch: 25 [22120/27653 (80%)] Loss: 0.0122
+Train Epoch: 25 [27650/27653 (100%)] Loss: 0.0060
+Train Epoch: 25 [27652/27653 (100%)] Loss: 0.0003
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:15,  2.61it/s]
+testing: 1000it [05:57,  2.80it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 25
+    loss           : 0.006633087964265238
+    val_macro_mr   : 1016.7887047619047
+    val_micro_mr   : 1136.107277289837
+    val_hit_at_1   : 0.0018820577164366374
+    val_hit_at_5   : 0.015056461731493099
+    val_hit_at_10  : 0.04203262233375157
+    val_precision_at_1: 0.003
+    val_precision_at_5: 0.0048
+    val_precision_at_10: 0.0067
+    val_mrr_scaled_10: 0.12036267347907031
+Train Epoch: 26 [0/27653 (0%)] Loss: 0.0002
+Train Epoch: 26 [5530/27653 (20%)] Loss: 0.0037
+Train Epoch: 26 [11060/27653 (40%)] Loss: 0.0069
+Train Epoch: 26 [16590/27653 (60%)] Loss: 0.0019
+Train Epoch: 26 [22120/27653 (80%)] Loss: 0.0018
+Train Epoch: 26 [27650/27653 (100%)] Loss: 0.0060
+Train Epoch: 26 [27652/27653 (100%)] Loss: 0.0048
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:15,  2.55it/s]
+testing: 1000it [06:10,  2.70it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 26
+    loss           : 0.006498869194366568
+    val_macro_mr   : 917.2050880952381
+    val_micro_mr   : 1041.121079046424
+    val_hit_at_1   : 0.0018820577164366374
+    val_hit_at_5   : 0.01944792973651192
+    val_hit_at_10  : 0.04203262233375157
+    val_precision_at_1: 0.003
+    val_precision_at_5: 0.0062
+    val_precision_at_10: 0.0067
+    val_mrr_scaled_10: 0.12512496216696212
+Saving current best: model_best.pth ...
+Train Epoch: 27 [0/27653 (0%)] Loss: 0.0054
+Train Epoch: 27 [5530/27653 (20%)] Loss: 0.0182
+Train Epoch: 27 [11060/27653 (40%)] Loss: 0.0013
+Train Epoch: 27 [16590/27653 (60%)] Loss: 0.0011
+Train Epoch: 27 [22120/27653 (80%)] Loss: 0.0004
+Train Epoch: 27 [27650/27653 (100%)] Loss: 0.0044
+Train Epoch: 27 [27652/27653 (100%)] Loss: 0.0013
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:16,  2.49it/s]
+testing: 1000it [06:14,  2.67it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 27
+    loss           : 0.006360173731756229
+    val_macro_mr   : 1006.5799547619048
+    val_micro_mr   : 1132.6135508155583
+    val_hit_at_1   : 0.0018820577164366374
+    val_hit_at_5   : 0.020075282308657464
+    val_hit_at_10  : 0.03513174404015056
+    val_precision_at_1: 0.003
+    val_precision_at_5: 0.0064
+    val_precision_at_10: 0.0056
+    val_mrr_scaled_10: 0.11747922320076076
+Train Epoch: 28 [0/27653 (0%)] Loss: 0.0050
+Train Epoch: 28 [5530/27653 (20%)] Loss: 0.0010
+Train Epoch: 28 [11060/27653 (40%)] Loss: 0.0059
+Train Epoch: 28 [16590/27653 (60%)] Loss: 0.0066
+Train Epoch: 28 [22120/27653 (80%)] Loss: 0.0038
+Train Epoch: 28 [27650/27653 (100%)] Loss: 0.0170
+Train Epoch: 28 [27652/27653 (100%)] Loss: 0.0009
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:15,  2.61it/s]
+testing: 1000it [05:53,  2.83it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 28
+    loss           : 0.006349252058841374
+    val_macro_mr   : 750.1028404761904
+    val_micro_mr   : 847.3293601003764
+    val_hit_at_1   : 0.00439146800501882
+    val_hit_at_5   : 0.031994981179422836
+    val_hit_at_10  : 0.060225846925972396
+    val_precision_at_1: 0.007
+    val_precision_at_5: 0.0102
+    val_precision_at_10: 0.0096
+    val_mrr_scaled_10: 0.16008700405386564
+Saving current best: model_best.pth ...
+Train Epoch: 29 [0/27653 (0%)] Loss: 0.0028
+Train Epoch: 29 [5530/27653 (20%)] Loss: 0.0017
+Train Epoch: 29 [11060/27653 (40%)] Loss: 0.0027
+Train Epoch: 29 [16590/27653 (60%)] Loss: 0.0101
+Train Epoch: 29 [22120/27653 (80%)] Loss: 0.0008
+Train Epoch: 29 [27650/27653 (100%)] Loss: 0.0047
+Train Epoch: 29 [27652/27653 (100%)] Loss: 0.0001
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:13,  2.99it/s]
+testing: 1000it [05:45,  2.89it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 29
+    loss           : 0.006355655360345657
+    val_macro_mr   : 899.6100285714285
+    val_micro_mr   : 1016.1787954830614
+    val_hit_at_1   : 0.0018820577164366374
+    val_hit_at_5   : 0.025094102885821833
+    val_hit_at_10  : 0.04454203262233375
+    val_precision_at_1: 0.003
+    val_precision_at_5: 0.008
+    val_precision_at_10: 0.0071
+    val_mrr_scaled_10: 0.13034814963379854
+Train Epoch: 30 [0/27653 (0%)] Loss: 0.0016
+Train Epoch: 30 [5530/27653 (20%)] Loss: 0.0007
+Train Epoch: 30 [11060/27653 (40%)] Loss: 0.0029
+Train Epoch: 30 [16590/27653 (60%)] Loss: 0.0025
+Train Epoch: 30 [22120/27653 (80%)] Loss: 0.0033
+Train Epoch: 30 [27650/27653 (100%)] Loss: 0.0048
+Train Epoch: 30 [27652/27653 (100%)] Loss: 0.0015
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:14,  2.70it/s]
+testing: 1000it [05:53,  2.83it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 30
+    loss           : 0.006112913382927485
+    val_macro_mr   : 949.8464642857143
+    val_micro_mr   : 1079.9755332496864
+    val_hit_at_1   : 0.002509410288582183
+    val_hit_at_5   : 0.025094102885821833
+    val_hit_at_10  : 0.04767879548306148
+    val_precision_at_1: 0.004
+    val_precision_at_5: 0.008
+    val_precision_at_10: 0.0076
+    val_mrr_scaled_10: 0.129508232550065
+Train Epoch: 31 [0/27653 (0%)] Loss: 0.0373
+Train Epoch: 31 [5530/27653 (20%)] Loss: 0.0014
+Train Epoch: 31 [11060/27653 (40%)] Loss: 0.0104
+Train Epoch: 31 [16590/27653 (60%)] Loss: 0.0004
+Train Epoch: 31 [22120/27653 (80%)] Loss: 0.0034
+Train Epoch: 31 [27650/27653 (100%)] Loss: 0.0007
+Train Epoch: 31 [27652/27653 (100%)] Loss: 0.0001
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:14,  2.75it/s]
+testing: 1000it [05:48,  2.87it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 31
+    loss           : 0.006070248584069421
+    val_macro_mr   : 962.4802642857144
+    val_micro_mr   : 1098.3613550815558
+    val_hit_at_1   : 0.0018820577164366374
+    val_hit_at_5   : 0.02383939774153074
+    val_hit_at_10  : 0.045796737766624844
+    val_precision_at_1: 0.003
+    val_precision_at_5: 0.0076
+    val_precision_at_10: 0.0073
+    val_mrr_scaled_10: 0.12333609697489942
+Train Epoch: 32 [0/27653 (0%)] Loss: 0.0003
+Train Epoch: 32 [5530/27653 (20%)] Loss: 0.0003
+Train Epoch: 32 [11060/27653 (40%)] Loss: 0.0233
+Train Epoch: 32 [16590/27653 (60%)] Loss: 0.0012
+Train Epoch: 32 [22120/27653 (80%)] Loss: 0.0010
+Train Epoch: 32 [27650/27653 (100%)] Loss: 0.0201
+Train Epoch: 32 [27652/27653 (100%)] Loss: 0.0023
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:15,  2.62it/s]
+testing: 1000it [05:48,  2.87it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 32
+    loss           : 0.005849098045869553
+    val_macro_mr   : 716.6611714285715
+    val_micro_mr   : 815.6304893350062
+    val_hit_at_1   : 0.005018820577164366
+    val_hit_at_5   : 0.033877038895859475
+    val_hit_at_10  : 0.062107904642409034
+    val_precision_at_1: 0.008
+    val_precision_at_5: 0.0108
+    val_precision_at_10: 0.0099
+    val_mrr_scaled_10: 0.16126395975478824
+Saving current best: model_best.pth ...
+Train Epoch: 33 [0/27653 (0%)] Loss: 0.0053
+Train Epoch: 33 [5530/27653 (20%)] Loss: 0.0010
+Train Epoch: 33 [11060/27653 (40%)] Loss: 0.0003
+Train Epoch: 33 [16590/27653 (60%)] Loss: 0.0012
+Train Epoch: 33 [22120/27653 (80%)] Loss: 0.0030
+Train Epoch: 33 [27650/27653 (100%)] Loss: 0.0007
+Train Epoch: 33 [27652/27653 (100%)] Loss: 0.0004
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:15,  2.60it/s]
+testing: 1000it [05:45,  2.89it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 33
+    loss           : 0.006005846296186164
+    val_macro_mr   : 855.1880357142857
+    val_micro_mr   : 972.2986198243412
+    val_hit_at_1   : 0.002509410288582183
+    val_hit_at_5   : 0.02383939774153074
+    val_hit_at_10  : 0.04893350062735257
+    val_precision_at_1: 0.004
+    val_precision_at_5: 0.0076
+    val_precision_at_10: 0.0078
+    val_mrr_scaled_10: 0.13807243803542907
+Train Epoch: 34 [0/27653 (0%)] Loss: 0.0008
+Train Epoch: 34 [5530/27653 (20%)] Loss: 0.0022
+Train Epoch: 34 [11060/27653 (40%)] Loss: 0.0027
+Train Epoch: 34 [16590/27653 (60%)] Loss: 0.0193
+Train Epoch: 34 [22120/27653 (80%)] Loss: 0.0033
+Train Epoch: 34 [27650/27653 (100%)] Loss: 0.0023
+Train Epoch: 34 [27652/27653 (100%)] Loss: 0.0058
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:16,  2.50it/s]
+testing: 1000it [05:49,  2.86it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 34
+    loss           : 0.005791245232472006
+    val_macro_mr   : 963.2579047619047
+    val_micro_mr   : 1093.1455457967377
+    val_hit_at_1   : 0.002509410288582183
+    val_hit_at_5   : 0.015683814303638646
+    val_hit_at_10  : 0.03889585947302384
+    val_precision_at_1: 0.004
+    val_precision_at_5: 0.005
+    val_precision_at_10: 0.0062
+    val_mrr_scaled_10: 0.12196844099302116
+Train Epoch: 35 [0/27653 (0%)] Loss: 0.0248
+Train Epoch: 35 [5530/27653 (20%)] Loss: 0.0063
+Train Epoch: 35 [11060/27653 (40%)] Loss: 0.0025
+Train Epoch: 35 [16590/27653 (60%)] Loss: 0.0004
+Train Epoch: 35 [22120/27653 (80%)] Loss: 0.0029
+Train Epoch: 35 [27650/27653 (100%)] Loss: 0.0019
+Train Epoch: 35 [27652/27653 (100%)] Loss: 0.0055
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:16,  2.48it/s]
+testing: 1000it [05:47,  2.87it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 35
+    loss           : 0.005635859405291268
+    val_macro_mr   : 912.4818214285714
+    val_micro_mr   : 1040.4140526976162
+    val_hit_at_1   : 0.002509410288582183
+    val_hit_at_5   : 0.020075282308657464
+    val_hit_at_10  : 0.04203262233375157
+    val_precision_at_1: 0.004
+    val_precision_at_5: 0.0064
+    val_precision_at_10: 0.0067
+    val_mrr_scaled_10: 0.12491770393651039
+Train Epoch: 36 [0/27653 (0%)] Loss: 0.0064
+Train Epoch: 36 [5530/27653 (20%)] Loss: 0.0155
+Train Epoch: 36 [11060/27653 (40%)] Loss: 0.0003
+Train Epoch: 36 [16590/27653 (60%)] Loss: 0.0093
+Train Epoch: 36 [22120/27653 (80%)] Loss: 0.0007
+Train Epoch: 36 [27650/27653 (100%)] Loss: 0.0026
+Train Epoch: 36 [27652/27653 (100%)] Loss: 0.0012
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:15,  2.53it/s]
+testing: 1000it [05:47,  2.88it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 36
+    loss           : 0.005585303687982183
+    val_macro_mr   : 707.8208238095239
+    val_micro_mr   : 807.353199498118
+    val_hit_at_1   : 0.00439146800501882
+    val_hit_at_5   : 0.029485570890840654
+    val_hit_at_10  : 0.06148055207026349
+    val_precision_at_1: 0.007
+    val_precision_at_5: 0.0094
+    val_precision_at_10: 0.0098
+    val_mrr_scaled_10: 0.16329484941996528
+Saving current best: model_best.pth ...
+Train Epoch: 37 [0/27653 (0%)] Loss: 0.0019
+Train Epoch: 37 [5530/27653 (20%)] Loss: 0.0005
+Train Epoch: 37 [11060/27653 (40%)] Loss: 0.0002
+Train Epoch: 37 [16590/27653 (60%)] Loss: 0.0050
+Train Epoch: 37 [22120/27653 (80%)] Loss: 0.0017
+Train Epoch: 37 [27650/27653 (100%)] Loss: 0.0163
+Train Epoch: 37 [27652/27653 (100%)] Loss: 0.0030
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:14,  2.71it/s]
+testing: 1000it [05:47,  2.88it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 37
+    loss           : 0.005557596084627135
+    val_macro_mr   : 749.4670261904763
+    val_micro_mr   : 847.0025094102886
+    val_hit_at_1   : 0.003136762860727729
+    val_hit_at_5   : 0.029485570890840654
+    val_hit_at_10  : 0.053952321204516936
+    val_precision_at_1: 0.005
+    val_precision_at_5: 0.0094
+    val_precision_at_10: 0.0086
+    val_mrr_scaled_10: 0.15018379399042112
+Train Epoch: 38 [0/27653 (0%)] Loss: 0.0006
+Train Epoch: 38 [5530/27653 (20%)] Loss: 0.0185
+Train Epoch: 38 [11060/27653 (40%)] Loss: 0.0276
+Train Epoch: 38 [16590/27653 (60%)] Loss: 0.0111
+Train Epoch: 38 [22120/27653 (80%)] Loss: 0.0003
+Train Epoch: 38 [27650/27653 (100%)] Loss: 0.0169
+Train Epoch: 38 [27652/27653 (100%)] Loss: 0.0002
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:14,  2.85it/s]
+testing: 1000it [05:41,  2.93it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 38
+    loss           : 0.005439439412542307
+    val_macro_mr   : 802.12315
+    val_micro_mr   : 924.6662484316186
+    val_hit_at_1   : 0.002509410288582183
+    val_hit_at_5   : 0.026348808030112924
+    val_hit_at_10  : 0.05332496863237139
+    val_precision_at_1: 0.004
+    val_precision_at_5: 0.0084
+    val_precision_at_10: 0.0085
+    val_mrr_scaled_10: 0.14634934810351483
+Train Epoch: 39 [0/27653 (0%)] Loss: 0.0001
+Train Epoch: 39 [5530/27653 (20%)] Loss: 0.0023
+Train Epoch: 39 [11060/27653 (40%)] Loss: 0.0052
+Train Epoch: 39 [16590/27653 (60%)] Loss: 0.0104
+Train Epoch: 39 [22120/27653 (80%)] Loss: 0.0025
+Train Epoch: 39 [27650/27653 (100%)] Loss: 0.0006
+Train Epoch: 39 [27652/27653 (100%)] Loss: 0.0013
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:14,  2.84it/s]
+testing: 1000it [05:43,  2.91it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 39
+    loss           : 0.0054030369767101545
+    val_macro_mr   : 840.039411904762
+    val_micro_mr   : 952.0351317440402
+    val_hit_at_1   : 0.002509410288582183
+    val_hit_at_5   : 0.024466750313676285
+    val_hit_at_10  : 0.04265997490589712
+    val_precision_at_1: 0.004
+    val_precision_at_5: 0.0078
+    val_precision_at_10: 0.0068
+    val_mrr_scaled_10: 0.1355675235727584
+Train Epoch: 40 [0/27653 (0%)] Loss: 0.0026
+Train Epoch: 40 [5530/27653 (20%)] Loss: 0.0015
+Train Epoch: 40 [11060/27653 (40%)] Loss: 0.0186
+Train Epoch: 40 [16590/27653 (60%)] Loss: 0.0002
+Train Epoch: 40 [22120/27653 (80%)] Loss: 0.0048
+Train Epoch: 40 [27650/27653 (100%)] Loss: 0.0051
+Train Epoch: 40 [27652/27653 (100%)] Loss: 0.0008
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:15,  2.62it/s]
+testing: 1000it [05:46,  2.89it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 40
+    loss           : 0.005317090963606858
+    val_macro_mr   : 770.512311904762
+    val_micro_mr   : 883.086574654956
+    val_hit_at_1   : 0.003136762860727729
+    val_hit_at_5   : 0.030740276035131745
+    val_hit_at_10  : 0.056461731493099125
+    val_precision_at_1: 0.005
+    val_precision_at_5: 0.0098
+    val_precision_at_10: 0.009
+    val_mrr_scaled_10: 0.14919861026457767
+Saving checkpoint: experiments/mag_cs_baseline/MatchModel/1012_183636/models/trial1/checkpoint-epoch40.pth ...
+Train Epoch: 41 [0/27653 (0%)] Loss: 0.0001
+Train Epoch: 41 [5530/27653 (20%)] Loss: 0.0088
+Train Epoch: 41 [11060/27653 (40%)] Loss: 0.0009
+Train Epoch: 41 [16590/27653 (60%)] Loss: 0.0003
+Train Epoch: 41 [22120/27653 (80%)] Loss: 0.0043
+Train Epoch: 41 [27650/27653 (100%)] Loss: 0.0040
+Train Epoch: 41 [27652/27653 (100%)] Loss: 0.0051
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:15,  2.62it/s]
+testing: 1000it [05:45,  2.90it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 41
+    loss           : 0.0053372004581608064
+    val_macro_mr   : 798.354719047619
+    val_micro_mr   : 911.1869510664993
+    val_hit_at_1   : 0.005018820577164366
+    val_hit_at_5   : 0.030740276035131745
+    val_hit_at_10  : 0.054579673776662486
+    val_precision_at_1: 0.008
+    val_precision_at_5: 0.0098
+    val_precision_at_10: 0.0087
+    val_mrr_scaled_10: 0.1488840902047697
+Train Epoch: 42 [0/27653 (0%)] Loss: 0.0006
+Train Epoch: 42 [5530/27653 (20%)] Loss: 0.0030
+Train Epoch: 42 [11060/27653 (40%)] Loss: 0.0089
+Train Epoch: 42 [16590/27653 (60%)] Loss: 0.0046
+Train Epoch: 42 [22120/27653 (80%)] Loss: 0.0028
+Train Epoch: 42 [27650/27653 (100%)] Loss: 0.0134
+Train Epoch: 42 [27652/27653 (100%)] Loss: 0.0073
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:13,  2.93it/s]
+testing: 1000it [05:41,  2.93it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 42
+    loss           : 0.005316580920203788
+    val_macro_mr   : 908.0752357142857
+    val_micro_mr   : 1040.5639899623588
+    val_hit_at_1   : 0.002509410288582183
+    val_hit_at_5   : 0.02258469259723965
+    val_hit_at_10  : 0.0451693851944793
+    val_precision_at_1: 0.004
+    val_precision_at_5: 0.0072
+    val_precision_at_10: 0.0072
+    val_mrr_scaled_10: 0.1308228096931155
+Train Epoch: 43 [0/27653 (0%)] Loss: 0.0047
+Train Epoch: 43 [5530/27653 (20%)] Loss: 0.0002
+Train Epoch: 43 [11060/27653 (40%)] Loss: 0.0171
+Train Epoch: 43 [16590/27653 (60%)] Loss: 0.0002
+Train Epoch: 43 [22120/27653 (80%)] Loss: 0.0364
+Train Epoch: 43 [27650/27653 (100%)] Loss: 0.0018
+Train Epoch: 43 [27652/27653 (100%)] Loss: 0.0004
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:13,  2.92it/s]
+testing: 1000it [05:47,  2.88it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 43
+    loss           : 0.005166990866564789
+    val_macro_mr   : 826.8715261904762
+    val_micro_mr   : 949.4253450439147
+    val_hit_at_1   : 0.003136762860727729
+    val_hit_at_5   : 0.030112923462986198
+    val_hit_at_10  : 0.055834378920953574
+    val_precision_at_1: 0.005
+    val_precision_at_5: 0.0096
+    val_precision_at_10: 0.0089
+    val_mrr_scaled_10: 0.14860060319514615
+Train Epoch: 44 [0/27653 (0%)] Loss: 0.0257
+Train Epoch: 44 [5530/27653 (20%)] Loss: 0.0031
+Train Epoch: 44 [11060/27653 (40%)] Loss: 0.0018
+Train Epoch: 44 [16590/27653 (60%)] Loss: 0.0032
+Train Epoch: 44 [22120/27653 (80%)] Loss: 0.0007
+Train Epoch: 44 [27650/27653 (100%)] Loss: 0.0003
+Train Epoch: 44 [27652/27653 (100%)] Loss: 0.0035
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:13,  2.96it/s]
+testing: 1000it [05:44,  2.90it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 44
+    loss           : 0.005156288890914622
+    val_macro_mr   : 816.6828357142857
+    val_micro_mr   : 938.5966122961104
+    val_hit_at_1   : 0.003136762860727729
+    val_hit_at_5   : 0.030112923462986198
+    val_hit_at_10  : 0.056461731493099125
+    val_precision_at_1: 0.005
+    val_precision_at_5: 0.0096
+    val_precision_at_10: 0.009
+    val_mrr_scaled_10: 0.14590470609306747
+Train Epoch: 45 [0/27653 (0%)] Loss: 0.0004
+Train Epoch: 45 [5530/27653 (20%)] Loss: 0.0004
+Train Epoch: 45 [11060/27653 (40%)] Loss: 0.0117
+Train Epoch: 45 [16590/27653 (60%)] Loss: 0.0209
+Train Epoch: 45 [22120/27653 (80%)] Loss: 0.0048
+Train Epoch: 45 [27650/27653 (100%)] Loss: 0.0014
+Train Epoch: 45 [27652/27653 (100%)] Loss: 0.0016
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:14,  2.75it/s]
+testing: 1000it [05:40,  2.94it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 45
+    loss           : 0.005179516489061346
+    val_macro_mr   : 828.00785
+    val_micro_mr   : 955.7409033877038
+    val_hit_at_1   : 0.003136762860727729
+    val_hit_at_5   : 0.026348808030112924
+    val_hit_at_10  : 0.054579673776662486
+    val_precision_at_1: 0.005
+    val_precision_at_5: 0.0084
+    val_precision_at_10: 0.0087
+    val_mrr_scaled_10: 0.14363390364201284
+Train Epoch: 46 [0/27653 (0%)] Loss: 0.0008
+Train Epoch: 46 [5530/27653 (20%)] Loss: 0.0007
+Train Epoch: 46 [11060/27653 (40%)] Loss: 0.0026
+Train Epoch: 46 [16590/27653 (60%)] Loss: 0.0012
+Train Epoch: 46 [22120/27653 (80%)] Loss: 0.0019
+Train Epoch: 46 [27650/27653 (100%)] Loss: 0.0003
+Train Epoch: 46 [27652/27653 (100%)] Loss: 0.0019
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:15,  2.60it/s]
+testing: 1000it [05:48,  2.87it/s]
+dict_keys(['loss', 'val_metrics'])
+    epoch          : 46
+    loss           : 0.005090763687965315
+    val_macro_mr   : 797.6016500000002
+    val_micro_mr   : 915.6279799247177
+    val_hit_at_1   : 0.003136762860727729
+    val_hit_at_5   : 0.027603513174404015
+    val_hit_at_10  : 0.05332496863237139
+    val_precision_at_1: 0.005
+    val_precision_at_5: 0.0088
+    val_precision_at_10: 0.0085
+    val_mrr_scaled_10: 0.14590246600814877
+Train Epoch: 47 [0/27653 (0%)] Loss: 0.0078
+Train Epoch: 47 [5530/27653 (20%)] Loss: 0.0002
+Train Epoch: 47 [11060/27653 (40%)] Loss: 0.0021
+Train Epoch: 47 [16590/27653 (60%)] Loss: 0.0067
+Train Epoch: 47 [22120/27653 (80%)] Loss: 0.0022
+Train Epoch: 47 [27650/27653 (100%)] Loss: 0.0020
+Train Epoch: 47 [27652/27653 (100%)] Loss: 0.0087
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:14,  2.73it/s]
+testing: 1000it [05:38,  2.95it/s]
+dict_keys(['loss', 'val_metrics'])
+Epoch 00047: reducing learning rate of group 0 to 5.0000e-04.
+    epoch          : 47
+    loss           : 0.005084162402275656
+    val_macro_mr   : 762.1504261904762
+    val_micro_mr   : 880.3287327478042
+    val_hit_at_1   : 0.002509410288582183
+    val_hit_at_5   : 0.025721455457967377
+    val_hit_at_10  : 0.054579673776662486
+    val_precision_at_1: 0.004
+    val_precision_at_5: 0.0082
+    val_precision_at_10: 0.0087
+    val_mrr_scaled_10: 0.1496235711424954
+Validation performance didn't improve for 10 epochs. Training stops.
+Saving current best: model_best.pth ...
+Testing with best model...
+number of candidate positions: 160424
+Generating graph encoding ...: 40it [00:16,  2.42it/s]
+testing: 1000it [05:40,  2.94it/s]
+    test_macro_mr  : 856.906
+    test_micro_mr  : 947.375
+    test_hit_at_1  : 0.004
+    test_hit_at_5  : 0.022
+    test_hit_at_10 : 0.055
+    test_precision_at_1: 0.007
+    test_precision_at_5: 0.007
+    test_precision_at_10: 0.009
+    test_mrr_scaled_10: 0.143
+The best model saved in: experiments/mag_cs_baseline/MatchModel/1012_183636/models/trial1/model_best.pth ...
+Finish training in 28534.171325922012 seconds
+& 856.906 +- 0.000  & 947.375 +- 0.000  & 0.004 +- 0.000  & 0.022 +- 0.000  & 0.055 +- 0.000  & 0.007 +- 0.000  & 0.007 +- 0.000  & 0.009 +- 0.000  & 0.143 +- 0.000
+
+model saved in 1012_183636

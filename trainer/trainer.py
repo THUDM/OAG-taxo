@@ -138,11 +138,6 @@ class TrainerS(Trainer):
         return log
 
     def _test(self, mode, gpu=True):
-        if self.num_count < 3:
-            self.num_count = self.num_count + 1
-            return
-        else:
-            self.num_count = 0
 
         assert mode in ['test', 'validation']
         torch.cuda.empty_cache()
@@ -230,11 +225,22 @@ class TrainerB(TrainerS):
             self.optimizer.step()
             total_loss += loss.item()
 
+            if batch_idx % self.log_step == 0 or batch_idx == len(self.data_loader)-1:
+                self.logger.debug(
+                    'Train Epoch: {} [{}/{} ({:.0f}%)] Loss: {:.4f}'.format(
+                        epoch,
+                        batch_idx * self.data_loader.batch_size,
+                        self.data_loader.n_samples,
+                        100.0 * batch_idx / len(self.data_loader),
+                        loss.item()))
+
         log = {'loss': total_loss / len(self.data_loader)}
 
         if self.do_validation:
             val_log = {'val_metrics': self._test('validation')}
             log = {**log, **val_log}
+
+        print(log.keys())
 
         if self.lr_scheduler is not None:
             if isinstance(self.lr_scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
@@ -247,11 +253,6 @@ class TrainerB(TrainerS):
         return log
 
     def _test(self, mode, gpu=True):
-        if self.num_count < 3:
-            self.num_count = self.num_count + 1
-            return
-        else:
-            self.num_count = 0
 
         assert mode in ['test', 'validation']
         torch.cuda.empty_cache()
@@ -282,6 +283,8 @@ class TrainerB(TrainerS):
                     us, vs = zip(*edges)
                     us = torch.tensor(us)
                     vs = torch.tensor(vs)
+                    us = us.to(self.device)
+                    vs = vs.to(self.device)
                 if 'g' in self.mode:
                     bgs = [self.edge2subgraph[e] for e in edges]
                     bgu, bgv = zip(*bgs)
@@ -293,22 +296,17 @@ class TrainerB(TrainerS):
                     lens = lens
                     sib_len = sib_len
                 ur, vr, sr = self.model.forward_encoders(us, vs, sib, bgu, bgv, bpu, bpv, lens, sib_len)
-                hs, sib_len = sr
-                batched_model.append((ur.detach().cpu(), vr.detach().cpu(), hs.detach().cpu(), sib_len.detach().cpu()))
+                batched_model.append((ur.detach().cpu(), vr.detach().cpu()))
                 batched_positions.append(len(edges))
-
             # start per query prediction
             all_ranks = []
             for i, query in tqdm(enumerate(vocab), desc='testing'):
                 batched_energy_scores = []
                 nf = node_features[query, :].to(self.device)
-                for (ur, vr, hs, sib_len), n_position in zip(batched_model, batched_positions):
+                for (ur, vr), n_position in zip(batched_model, batched_positions):
                     expanded_nf = nf.expand(n_position, -1)
                     ur = ur.to(self.device)
                     vr = vr.to(self.device)
-                    hs = hs.to(self.device)
-                    sib_len = sib_len.to(self.device)
-                    hs_attn = model.attention(ur, vr, hs, sib_len, expanded_nf)
                     energy_scores = model.score(ur, vr, expanded_nf)
                     batched_energy_scores.append(energy_scores)
                 batched_energy_scores = torch.cat(batched_energy_scores)

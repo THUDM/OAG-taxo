@@ -1,7 +1,7 @@
 {
     "name": "MatchModel",
     "n_gpu": 4,
-    "data_path": "/home/ayw19/taxoenrich/data/Data/Artificial Intelligence.pickle.bin",
+    "data_path": "/home/ayw19/taxoenrich/data/MAG_FULL/mag_field_of_studies.pickle.bin",
     "mode": "rps",
     "arch": {
         "type": "MatchModel",
@@ -27,8 +27,8 @@
         "type": "UnifiedDataLoader",
         "args":{
             "sampling_mode": 1,
-            "batch_size": 4,
-            "negative_size": 31,
+            "batch_size": 1,
+            "negative_size": 2,
             "max_pos_size": 100,
             "expand_factor": 40,
             "shuffle": true,

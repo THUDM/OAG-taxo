@@ -4,8 +4,8 @@
     "data_path": "/home/ayw19/taxoenrich/data/MAG_CS/computer_science.pickle.bin",
     "mode": "r",
     "arch": {
-        "type": "ExpanMatchModel",
-        "trainer": "TrainerTExpan",
+        "type": "ExpanTMatchModel",
+        "trainer": "TrainerExpanTMN",
         "args": {
             "propagation_method": "PGAT",
             "readout_method": "WMR",
@@ -24,7 +24,7 @@
         }
     },
     "train_data_loader": {
-        "type": "TaxoExpanDataLoader",
+        "type": "TaxoExpanDataLoaderTMN",
         "args":{
             "sampling_mode": 1,
             "batch_size": 4,
@@ -62,7 +62,7 @@
         "epochs": 200,
         "test_batch_size": 4096,
 
-        "save_dir": "./experiments/mag_cs_expan/",
+        "save_dir": "./experiments/mag_cs_expant/",
         "save_period": 20,
         "verbosity": 2,
 

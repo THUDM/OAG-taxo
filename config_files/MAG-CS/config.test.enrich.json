@@ -27,7 +27,7 @@
         "type": "UnifiedDataLoader",
         "args":{
             "sampling_mode": 1,
-            "batch_size": 4,
+            "batch_size": 2,
             "negative_size": 31,
             "max_pos_size": 100,
             "expand_factor": 40,

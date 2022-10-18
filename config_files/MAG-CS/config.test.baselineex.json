@@ -9,7 +9,7 @@
         "args": {
             "propagation_method": "PGAT",
             "readout_method": "WMR",
-            "matching_method": "BIM",
+            "matching_method": "RBIM",
             "k": 5,
             "in_dim": 768,
             "hidden_dim": 250,

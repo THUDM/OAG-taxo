@@ -63,10 +63,7 @@ class Trainer(BaseTrainer):
 
 class TrainerS(Trainer):
     """
-    Trainer class, for one-to-one matching methods on taxonomy completion task
-
-    Note:
-        Inherited from BaseTrainer.
+        Base Trainer
     """
 
     def __init__(self, mode, model, loss, metrics, pre_metric, optimizer, config, data_loader, lr_scheduler=None):
@@ -205,6 +202,9 @@ class TrainerS(Trainer):
 
 
 class TrainerB(TrainerS):
+    """
+        Trainer Class, for Baseline method on Completion Task
+    """
     def __init__(self, mode, model, loss, metrics, pre_metric, optimizer, config, data_loader, lr_scheduler=None):
         super(TrainerB, self).__init__(mode, model, loss, metrics, pre_metric, optimizer, config, data_loader, lr_scheduler)
 
@@ -318,10 +318,7 @@ class TrainerB(TrainerS):
 
 class TrainerT(TrainerS):
     """
-    Trainer class, for TMN on taxonomy completion task
-
-    Note:
-        Inherited from BaseTrainer.
+        Trainer class, for Enrich Method on Completion task
     """
 
     def __init__(self, mode, model, loss, metrics, pre_metric, optimizer, config, data_loader, lr_scheduler=None):
@@ -507,10 +504,7 @@ class TrainerTExpan(Trainer):
 
 class TrainerExpan(Trainer):
     """
-    Trainer class, for one-to-one matching methods on taxonomy expansion task
-
-    Note:
-        Inherited from BaseTrainer.
+        Trainer class, for Expan on expansion task
     """
 
     def __init__(self, mode, model, loss, metrics, pre_metric, optimizer, config, data_loader, lr_scheduler=None):
@@ -532,7 +526,7 @@ class TrainerExpan(Trainer):
         self.model.train()
         total_loss = 0
         for batch_idx, batch in enumerate(self.data_loader):
-            nf, label, u, graphs, paths, lens = batch
+            nf, label, u, v, graphs, paths, lens = batch
 
             self.optimizer.zero_grad()
             scores = self.model(nf, u, graphs, paths, lens)
@@ -624,6 +618,134 @@ class TrainerExpan(Trainer):
                 batched_energy_scores = torch.cat(batched_energy_scores)
                 batched_energy_scores, labels = rearrange(batched_energy_scores, candidate_positions, node2pos[query])
                 all_ranks.extend(self.pre_metric(batched_energy_scores, labels))
+            total_metrics = [metric(all_ranks) for metric in self.metrics]
+
+        return total_metrics
+
+
+class TrainerExpanTMN(Trainer):
+    """
+        Trainer for expan on Completion Task
+    """
+    def __init__(self, mode, model, loss, metrics, pre_metric, optimizer, config, data_loader, lr_scheduler=None):
+        super(TrainerExpanTMN, self).__init__(model, loss, metrics, pre_metric, optimizer, config, data_loader, lr_scheduler)
+        self.mode = mode
+
+        dataset = self.data_loader.dataset
+        self.candidate_positions = dataset.all_edges
+        self.valid_node2pos = dataset.valid_node2pos
+        self.test_node2pos = dataset.test_node2pos
+        self.valid_vocab = dataset.valid_node_list
+        self.test_vocab = dataset.test_node_list
+
+        if 'g' in mode:
+            self.all_nodes = sorted(list(dataset.core_subgraph.nodes))
+            self.node2subgraph = {node: dataset._get_subgraph_and_node_pair(-1, node) for node in tqdm(self.all_nodes, desc='collecting nodegraph')}
+
+    def _train_epoch(self, epoch):
+        self.model.train()
+        total_loss = 0
+        for batch_idx, batch in enumerate(self.data_loader):
+            nf, label, u, v, graphs, paths, lens = batch
+
+            self.optimizer.zero_grad()
+            scores = self.model(nf, u, v, graphs, paths, lens)
+            label = label.to(self.device)
+            if self.is_infonce_training:
+                n_batches = label.sum().detach()
+                prediction = scores.reshape(n_batches, -1)
+                target = torch.zeros(n_batches, dtype=torch.long).to(self.device)
+                loss = self.loss(prediction, target)
+            else:
+                loss = self.loss(scores, label)
+            loss.backward()
+            self.optimizer.step()
+
+            total_loss += loss.item()
+
+            if batch_idx % self.log_step == 0 or batch_idx == len(self.data_loader) - 1:
+                self.logger.debug(
+                    'Train Epoch: {} [{}/{} ({:.0f}%)] Loss: {:.6f}'
+                        .format(epoch, batch_idx * self.data_loader.batch_size, self.data_loader.n_samples,
+                                100.0 * batch_idx / len(self.data_loader),
+                                loss.item()))
+
+        log = {'loss': total_loss / len(self.data_loader)}
+
+        ## Validation stage
+        if self.do_validation:
+            val_log = {'val_metrics': self._test('validation')}
+            log = {**log, **val_log}
+
+        if self.lr_scheduler is not None:
+            if isinstance(self.lr_scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
+                if self.lr_scheduler_mode == "min":
+                    self.lr_scheduler.step(log['val_metrics'][0])
+                else:
+                    self.lr_scheduler.step(log['val_metrics'][-1])
+            else:
+                self.lr_scheduler.step()
+
+        return log
+
+    def _test(self, mode, gpu=True):
+        assert mode in ['test', 'validation']
+        torch.cuda.empty_cache()
+        model = self.model if gpu else self.model.cpu()
+
+        batch_size = self.test_batch_size
+
+        model.eval()
+        with torch.no_grad():
+            dataset = self.data_loader.dataset
+            node_features = dataset.node_features
+            if mode == 'test':
+                # vocab = self.test_vocab
+                # node2pos = self.test_node2pos
+                node2pos = dataset.test_node2parent
+                vocab = list(node2pos.keys())
+            else:
+                vocab = self.valid_vocab
+                node2pos = self.valid_node2pos
+            candidate_positions = self.candidate_positions
+            batched_model = [] # save the CPU graph representation
+            batched_positions = []
+            for edges in tqdm(mit.sliced(candidate_positions, batch_size), desc="Generating graph encoding ..."):
+                edges = list(edges)
+                us, vs, bgu, bgv, bpu, bpv, lens = None, None, None, None, None, None, None
+                if 'r' in self.mode:
+                    us, vs = zip(*edges)
+                    us = torch.tensor(us)
+                    vs = torch.tensor(vs)
+                if 'g' in self.mode:
+                    bgs = [self.edge2subgraph[e] for e in edges]
+                    bgu, bgv = zip(*bgs)
+                if 'p' in self.mode:
+                    bpu, bpv, lens = dataset._get_batch_edge_node_path(edges)
+                    bpu = bpu
+                    bpv = bpv
+                    lens = lens
+
+                ur = self.model.forward_encoders(us, bgu, bpu, lens)
+                vr = self.model.embedding_fuc(vs)
+                batched_model.append((ur.detach().cpu(), vr.detach().cpu()))
+                batched_positions.append(len(edges))
+
+            # start per query prediction
+            all_ranks = []
+            for i, query in tqdm(enumerate(vocab), desc='testing'):
+                batched_energy_scores = []
+                nf = node_features[query, :].to(self.device)
+                for (ur, vr), n_position in zip(batched_model, batched_positions):
+                    expanded_nf = nf.expand(n_position, -1)
+                    ur = ur.to(self.device)
+                    vr = vr.to(self.device)
+                    energy_scores = model.match(ur, vr, expanded_nf)
+                    batched_energy_scores.append(energy_scores)
+                batched_energy_scores = torch.cat(batched_energy_scores)
+                batched_energy_scores, labels = rearrange(batched_energy_scores, candidate_positions, node2pos[query])
+                all_ranks.extend(self.pre_metric(batched_energy_scores, labels))
+
             total_metrics = [metric(all_ranks) for metric in self.metrics]
 
         return total_metrics

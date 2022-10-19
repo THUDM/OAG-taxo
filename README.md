@@ -33,3 +33,18 @@ The Inner Infer means we choose the dataset itself to generate the exsiting grap
 The Outer Infer measn we choose the Mag_CS as the exsiting graph and all nodes of Artificial Intelligence node for test. Use the outer_infer.py and the same method.
 
 We provide our trained pth file for you [here](https://drive.google.com/drive/folders/18JacRQeLDAzYA8fA3jSmUlU9tbBA5Mhp?usp=sharing)
+
+### Config File Prepared
+For example, in ./config_file/mag_cs, we introduce each file's usage:
+
+config.test.enrich.json:enrich method on completion task
+config.test.baseline.json:baseline BIM method on completion task
+config.test.baselineex.json:Expan method on expansion task
+config.test.baselineextmn.json:Expan method on completion task
+
+config.valid.*.json means corresponding infer config file for * method and config.test.*.json
+
+If you do not have enough GPU memory for training, decrease batch size and negtive position please.
+
+### Report PDF
+Share my report [here](https://drive.google.com/file/d/10lrXlKZ5pPvr40ea7XEm5_G4bU2qShOp/view?usp=sharing). 

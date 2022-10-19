@@ -526,7 +526,7 @@ class TrainerExpan(Trainer):
         self.model.train()
         total_loss = 0
         for batch_idx, batch in enumerate(self.data_loader):
-            nf, label, u, v, graphs, paths, lens = batch
+            nf, label, u, graphs, paths, lens = batch
 
             self.optimizer.zero_grad()
             scores = self.model(nf, u, graphs, paths, lens)
@@ -588,6 +588,7 @@ class TrainerExpan(Trainer):
                 vocab = self.valid_vocab
                 node2pos = self.valid_node2pos
             candidate_positions = self.candidate_positions
+            print(f'number of candidate positions: {len(candidate_positions)}')
             batched_model = [] # save the CPU graph representation
             batched_positions = []
             for us_l in tqdm(mit.sliced(candidate_positions, batch_size), desc="Generating graph encoding ..."):
@@ -699,17 +700,19 @@ class TrainerExpanTMN(Trainer):
         with torch.no_grad():
             dataset = self.data_loader.dataset
             node_features = dataset.node_features
+            candidate_positions = self.candidate_positions
+            batched_model = []  # save the CPU graph representation
+            batched_positions = []
             if mode == 'test':
-                # vocab = self.test_vocab
-                # node2pos = self.test_node2pos
-                node2pos = dataset.test_node2parent
-                vocab = list(node2pos.keys())
+                vocab = self.test_vocab
+                node2pos = self.test_node2pos
+                """node2pos = dataset.test_node2parent
+                vocab = list(node2pos.keys())"""
             else:
                 vocab = self.valid_vocab
                 node2pos = self.valid_node2pos
-            candidate_positions = self.candidate_positions
-            batched_model = [] # save the CPU graph representation
-            batched_positions = []
+                print(f'number of candidate positions: {len(candidate_positions)}')
+
             for edges in tqdm(mit.sliced(candidate_positions, batch_size), desc="Generating graph encoding ..."):
                 edges = list(edges)
                 us, vs, bgu, bgv, bpu, bpv, lens = None, None, None, None, None, None, None

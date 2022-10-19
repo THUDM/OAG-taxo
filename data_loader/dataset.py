@@ -1120,7 +1120,7 @@ class ExpanDataset(GraphPathDataset):
         query_node = self.node_list[idx]
 
         # generate positive triplet(s)
-        """if self.sampling_mode == 0:
+        if self.sampling_mode == 0:
             pos_positions = self.node2pos[query_node]
             if len(pos_positions) > self.max_pos_size and self.mode == 'train':
                 pos_positions = random.sample(pos_positions, k=self.max_pos_size)
@@ -1137,8 +1137,7 @@ class ExpanDataset(GraphPathDataset):
         # select negative parents
         negative_size = len(res) if self.negative_size == -1 else self.negative_size
         negative_anchors = self._get_negative_anchors(query_node, negative_size)
-"""
-        if self.sampling_mode == 0:
+        """        if self.sampling_mode == 0:
             pos_positions = self.node2pos[query_node]
             if len(pos_positions) > self.max_pos_size and self.mode == 'train':
                 pos_positions = random.sample(pos_positions, k=self.max_pos_size)
@@ -1160,14 +1159,13 @@ class ExpanDataset(GraphPathDataset):
         for u, v in negative_anchors:
             u_egonet = self._get_subgraph_and_node_pair(query_node, u)
             u_path, lens = self._get_edge_node_path(query_node, u)
-            res.append([u, v, u_egonet, u_path, lens, query_node, 0])
+            res.append([u, v, u_egonet, u_path, lens, query_node, 0])"""
 
-        """
         # generate negative triplets
         for u in negative_anchors:
             u_egonet = self._get_subgraph_and_node_pair(query_node, u)
             u_path, lens = self._get_edge_node_path(query_node, u)
-            res.append([u, u_egonet, u_path, lens, query_node, 0])"""
+            res.append([u, u_egonet, u_path, lens, query_node, 0])
 
         return tuple(res)
 

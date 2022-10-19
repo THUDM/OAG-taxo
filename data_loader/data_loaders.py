@@ -191,7 +191,7 @@ class TaxoExpanDataLoader(DataLoader):
         self.n_samples = len(self.dataset)  # total number of samples that will be emitted by this data loader
 
     def collate_fn(self, samples):
-        us, vs, graphs_u, paths_u, lens, queries, labels = map(list, zip(*chain(*samples)))
+        us, graphs_u, paths_u, lens, queries, labels = map(list, zip(*chain(*samples)))
         if 'g' not in self.mode:
             graphs_u = None
         if 'r' in self.mode:
@@ -202,7 +202,7 @@ class TaxoExpanDataLoader(DataLoader):
         else:
             lens = None
             paths_u = None
-        return torch.tensor(queries), torch.tensor(labels), torch.tensor(us), torch.tensor(vs), graphs_u, paths_u, lens
+        return torch.tensor(queries), torch.tensor(labels), torch.tensor(us), graphs_u, paths_u, lens
 
     def __str__(self):
         return "\n\t".join([

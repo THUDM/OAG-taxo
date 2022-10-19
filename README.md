@@ -42,7 +42,7 @@ config.test.baseline.json:baseline BIM method on completion task
 config.test.baselineex.json:Expan method on expansion task
 config.test.baselineextmn.json:Expan method on completion task
 
-config.valid.*.json means corresponding infer config file for * method and config.test.*.json
+config.valid.X.json means corresponding infer config file for X method and config.test.X.json
 
 If you do not have enough GPU memory for training, decrease batch size and negtive position please.
 

@@ -1,7 +1,7 @@
 {
     "name": "MatchModel",
     "n_gpu": 4,
-    "data_path": "/home/ayw19/taxoenrich/data/MAG_FULL/mag_field_of_studies.pickle.bin",
+    "data_path": "data/MAG_FULL/mag_field_of_studies.pickle.bin",
     "mode": "rps",
     "arch": {
         "type": "MatchModel",
@@ -68,7 +68,7 @@
         "epochs": 50,
         "test_batch_size": 512,
 
-        "save_dir": "./experiments/mag_cs_enrich/",
+        "save_dir": "./experiments/mag_full_enrich/",
         "save_period": 20,
         "verbosity": 2,
 

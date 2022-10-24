@@ -1,4 +1,4 @@
-gensim==4.2.0
+gensim==3.8.0
 networkx==2.3
 more_itertools==6.0.0
 transformers==4.22.2

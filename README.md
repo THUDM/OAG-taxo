@@ -7,6 +7,12 @@ Also, we provide inference on AI taxonomy via pre-trained models on Computer Sci
 
 This work is mainly based on the work of [TaxoEnrich](https://github.com/minhaoJ2/TaxoEnrich). We choose it because it has many available models and trainers.
 
+### Environment
+
+You need to prepare an environment of cuda10 + dgl0.4.0. It can be only used on the Graphics Card below 30.
+
+Install requirements.txt via ```pip install -r requirements.txt```
+
 ### Data Preparation
 
 If you want to try the dataset of Mag-CS, Mag-full, and our own dataset on these models, we have prepared the dataset [here](https://drive.google.com/drive/folders/1Yl5pQKCGytJPgxghs-M4kVzf7bJV200c?usp=sharing)
@@ -19,10 +25,6 @@ For example,
 python data_creation/embedding_generation.py --dataset oag-ai
 python data_creation/generate_dataset_binary.py -d data/OAG_AI -t "Artificial Intelligence" -p 0
 ```
-
-### Environment
-
-You need to prepare an environment of cuda10 + dgl0.4.0. It can be only used on the Graphics Card below 30.
 
 ### Train the model
 
@@ -56,3 +58,7 @@ If you do not have enough GPU memory for training, decrease the batch size and t
 
 ### Report PDF
 Share my report [here](https://drive.google.com/file/d/10lrXlKZ5pPvr40ea7XEm5_G4bU2qShOp/view?usp=sharing). 
+
+### References
+[1] Jiaming Shen, Zhihong Shen, Chenyan Xiong, Chi Wang, Kuansan Wang and Jiawei Han ”TaxoExpan: Self-supervised Taxonomy Expansion with Position-Enhanced Graph Neural Network”, in Proc. 2020 Int. World Wide Web Conf. (WWW’20), Taipei, Taiwan, Apr. 2020.
+[2] Minhao Jiang, Xiangchen Song, Jieyu Zhang and Jiawei Han, “TaxoEnrich:  Self-Supervised Taxonomy Completion via Structure-Semantic Representations”, in Proc. The ACM Web Conf. 2022 (WWW’22), April 2022

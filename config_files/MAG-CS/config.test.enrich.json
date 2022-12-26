@@ -1,7 +1,7 @@
 {
     "name": "MatchModel",
     "n_gpu": 4,
-    "data_path": "./data/MAG_CS/computer_science.pickle.bin",
+    "data_path": "data/MAG_CS/computer_science.pickle.bin",
     "mode": "rps",
     "arch": {
         "type": "MatchModel",
@@ -27,7 +27,7 @@
         "type": "UnifiedDataLoader",
         "args":{
             "sampling_mode": 1,
-            "batch_size": 4,
+            "batch_size": 2,
             "negative_size": 31,
             "max_pos_size": 100,
             "expand_factor": 40,
@@ -65,7 +65,7 @@
         "l3": 1.0,
         "l4": 1.0,
 
-        "epochs": 1,
+        "epochs": 50,
         "test_batch_size": 512,
 
         "save_dir": "./experiments/mag_cs_enrich/",

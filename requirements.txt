@@ -1,0 +1,10 @@
+gensim==3.8.0
+networkx==2.3
+more_itertools==6.0.0
+transformers==4.22.2
+dgl==0.4
+matplotlib==3.5.3
+numpy==1.21.6
+tqdm==4.64.1
+typing==3.7.4.3
+torchvision==0.10.0

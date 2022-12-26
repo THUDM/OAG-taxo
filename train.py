@@ -37,10 +37,8 @@ def main(config):
     #     primal_loss = primal_loss()
     metrics = [getattr(module_metric, met) for met in config['metrics']]
     if config['loss'].startswith("info_nce") or config['loss'].startswith("bce_loss"):
-        print("mode is 1")
         pre_metric = partial(module_metric.obtain_ranks, mode=1)  # info_nce_loss
     else:
-        print("mode is 2")
         pre_metric = partial(module_metric.obtain_ranks, mode=0)
 
     # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler

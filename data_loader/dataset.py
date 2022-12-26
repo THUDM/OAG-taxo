@@ -1028,6 +1028,7 @@ class ExpanDataset(GraphPathDataset):
         self.test_topk = test_topk
 
         self.node_features = graph_dataset.g_full.ndata['x']
+        self.input_features = graph_dataset.g_full.ndata['y']
         full_graph = graph_dataset.g_full.to_networkx()
         train_node_ids = graph_dataset.train_node_ids
         roots = [node for node in full_graph.nodes() if full_graph.in_degree(node) == 0]
@@ -1092,6 +1093,10 @@ class ExpanDataset(GraphPathDataset):
         self.all_nodes = list(self.core_subgraph.nodes())
         random.shuffle(self.all_nodes)
 
+        self.all_edges = list(self._get_candidate_positions(self.core_subgraph))
+        self.edge2dist = {(u, v): nx.shortest_path_length(self.core_subgraph, u, v) for (u, v) in self.all_edges}
+        random.shuffle(self.all_edges)
+
         # used for caching local subgraphs
         self.cache = {}  # if g = self.cache[anchor_node], then g is the egonet centered on the anchor_node
         self.cache_counter = {}  # if n = self.cache[anchor_node], then n is the number of times you used this cache
@@ -1132,6 +1137,29 @@ class ExpanDataset(GraphPathDataset):
         # select negative parents
         negative_size = len(res) if self.negative_size == -1 else self.negative_size
         negative_anchors = self._get_negative_anchors(query_node, negative_size)
+        """        if self.sampling_mode == 0:
+            pos_positions = self.node2pos[query_node]
+            if len(pos_positions) > self.max_pos_size and self.mode == 'train':
+                pos_positions = random.sample(pos_positions, k=self.max_pos_size)
+            for u, v in pos_positions:
+                u_egonet = self._get_subgraph_and_node_pair(query_node, u)
+                u_path, lens = self._get_edge_node_path(query_node, u)
+                res.append([u, v,  u_egonet, u_path, lens, query_node, 1])
+        elif self.sampling_mode > 0:
+            u, v = random.choice(self.node2pos[query_node])
+            u_egonet = self._get_subgraph_and_node_pair(query_node, u)
+            u_path, lens = self._get_edge_node_path(query_node, u)
+            res.append([u, v, u_egonet, u_path, lens, query_node, 1])
+
+        # select negative parents
+        negative_size = len(res) if self.negative_size == -1 else self.negative_size
+        negative_anchors = self._get_negative_anchors(query_node, negative_size)
+
+        # generate negative triplets
+        for u, v in negative_anchors:
+            u_egonet = self._get_subgraph_and_node_pair(query_node, u)
+            u_path, lens = self._get_edge_node_path(query_node, u)
+            res.append([u, v, u_egonet, u_path, lens, query_node, 0])"""
 
         # generate negative triplets
         for u in negative_anchors:
@@ -1178,6 +1206,344 @@ class ExpanDataset(GraphPathDataset):
             if self.pointer >= len(self.all_nodes):
                 self.pointer = 0
                 random.shuffle(self.all_nodes)
+        if len(negatives) > negative_size:
+            negatives = negatives[:negative_size]
+
+        return negatives
+
+    def _get_subgraph_and_node_pair(self, query_node, anchor_node_u):
+        """ Generate anchor_egonet and obtain query_node feature
+
+        instance_mode: 0 means negative example, 1 means positive example
+        """
+
+        # [IMPORTANT]
+        cache_flag = self._check_cache_flag(anchor_node_u)
+        flag = (query_node < 0) or (anchor_node_u not in self.node2nbs[query_node])
+        if flag and cache_flag:
+            g_u = self.cache[anchor_node_u]
+            # self.cache_counter[anchor_node_u] += 1
+        else:
+            g_u = self._get_subgraph(query_node, anchor_node_u, flag)
+            if flag:  # save to cache
+                self.cache[anchor_node_u] = g_u
+                self.cache_counter[anchor_node_u] = 0
+
+        return g_u
+
+    def _get_subgraph(self, query_node, anchor_node, instance_mode):
+        if instance_mode:  # do not need to worry about query_node appears to be the child of anchor_node
+            # parents of anchor node
+            if anchor_node == self.pseudo_leaf_node:
+                nodes = [n for n in random.choices(self.leaf_nodes, k=self.expand_factor)]
+                nodes_pos = [0] * len(nodes)
+                # anchor node itself
+                parent_node_idx = len(nodes)
+                nodes.append(anchor_node)
+                nodes_pos.append(1)
+
+                # # anchor node itself
+                # parent_node_idx = 0
+                # nodes = [anchor_node]
+                # nodes_pos = [1]
+
+            else:
+                nodes = [n for n in self.core_subgraph.predecessors(anchor_node)]
+                nodes_pos = [0] * len(nodes)
+                # anchor node itself
+                parent_node_idx = len(nodes)
+                nodes.append(anchor_node)
+                nodes_pos.append(1)
+                # siblings of query node (i.e., children of anchor node)
+                if self.core_subgraph.out_degree(anchor_node) <= self.expand_factor:
+                    siblings = [n for n in self.core_subgraph.successors(anchor_node) if n != self.pseudo_leaf_node]
+                else:
+                    siblings = [n for n in
+                                random.choices(list(self.core_subgraph.successors(anchor_node)), k=self.expand_factor)
+                                if
+                                n != self.pseudo_leaf_node]
+                nodes.extend(siblings)
+                nodes_pos.extend([2] * len(siblings))
+        else:  # remove query_node from the children set of anchor_node
+            # TODO maybe include query node's neighbor
+            if anchor_node == self.pseudo_leaf_node:
+                nodes = [n for n in random.choices(self.leaf_nodes, k=self.expand_factor) if n != query_node]
+                nodes_pos = [0] * len(nodes)
+                # anchor node itself
+                parent_node_idx = len(nodes)
+                nodes.append(anchor_node)
+                nodes_pos.append(1)
+                # parent_node_idx = 0
+                # nodes = [anchor_node]
+                # nodes_pos = [1]
+            # parents of anchor node
+            else:
+                nodes = [n for n in self.core_subgraph.predecessors(anchor_node) if n != query_node]
+                nodes_pos = [0] * len(nodes)
+                # anchor node itself
+                parent_node_idx = len(nodes)
+                nodes.append(anchor_node)
+                nodes_pos.append(1)
+                # siblings of query node (i.e., children of anchor node)
+                if self.core_subgraph.out_degree(anchor_node) <= self.expand_factor:
+                    siblings = [n for n in self.core_subgraph.successors(anchor_node) if
+                                n != self.pseudo_leaf_node and n != query_node]
+                else:
+                    siblings = [n for n in
+                                random.choices(list(self.core_subgraph.successors(anchor_node)), k=self.expand_factor)
+                                if
+                                n != self.pseudo_leaf_node and n != query_node]
+                nodes.extend(siblings)
+                nodes_pos.extend([2] * len(siblings))
+
+        # create dgl graph with features
+        g = dgl.DGLGraph()
+        g.add_nodes(len(nodes), {"_id": torch.tensor(nodes), "pos": torch.tensor(nodes_pos)})
+        add_edge_for_dgl(g, list(range(parent_node_idx)), parent_node_idx)
+        add_edge_for_dgl(g, parent_node_idx, list(range(parent_node_idx + 1, len(nodes))))
+
+        # add self-cycle
+        g.add_edges(g.nodes(), g.nodes())
+
+        return g
+
+    def _get_edge_node_path(self, query_node, parent):
+        if parent == self.pseudo_leaf_node:
+            pu = [self.pseudo_leaf_node]
+        else:
+            pu = random.choice(self.node2root_path[parent])
+            pu = [n for n in pu if n!=query_node]
+        len_pu = len(pu)
+        return pu, len_pu
+
+    def _get_batch_edge_node_path(self, edges):
+        bpu, lens = zip(*[self._get_edge_node_path(None, edge) for edge in edges])
+        lens = torch.tensor(lens)
+        max_u = lens.max(dim=0)[0]
+        bpu = [p+[self.pseudo_leaf_node]*(max_u-len(p)) for p in bpu]
+        return torch.tensor(bpu), lens
+
+
+class ExpanDatasetTMN(GraphPathDataset):
+    def __init__(self, graph_dataset, mode="train", sampling_mode=1, negative_size=32, max_pos_size=100, expand_factor=64, cache_refresh_time=128, normalize_embed=False, test_topk=-1):
+        start = time.time()
+        self.mode = mode
+        self.sampling_mode = sampling_mode
+        self.negative_size = negative_size
+        self.max_pos_size = max_pos_size
+        self.expand_factor = expand_factor
+        self.cache_refresh_time = cache_refresh_time
+        self.normalize_embed = normalize_embed
+        self.test_topk = test_topk
+
+        self.node_features = graph_dataset.g_full.ndata['x']
+        self.input_features = graph_dataset.g_full.ndata['y']
+        full_graph = graph_dataset.g_full.to_networkx()
+        train_node_ids = graph_dataset.train_node_ids
+        roots = [node for node in full_graph.nodes() if full_graph.in_degree(node) == 0]
+        if len(roots) > 1:
+            self.root = len(full_graph.nodes)
+            for r in roots:
+                full_graph.add_edge(self.root, r)
+            root_vector = torch.mean(self.node_features[roots], dim=0, keepdim=True)
+            self.node_features = torch.cat((self.node_features, root_vector), 0)
+            self.vocab = graph_dataset.vocab + ['root', 'leaf']
+            train_node_ids.append(self.root)
+        else:
+            self.root = roots[0]
+            self.vocab = graph_dataset.vocab + ['leaf']
+        self.full_graph = full_graph
+
+        # add pseudo leaf node to core graph
+        self.core_subgraph = self._get_holdout_subgraph(train_node_ids)
+        self.pseudo_leaf_node = len(full_graph.nodes)
+        for node in list(self.core_subgraph.nodes()):
+            self.core_subgraph.add_edge(node, self.pseudo_leaf_node)
+        self.leaf_nodes = [node for node in self.core_subgraph.nodes() if self.core_subgraph.out_degree(node) == 1]
+        # for pseudo leaf node
+        leaf_vector = torch.zeros((1, self.node_features.size(1)))  # zero vector works best
+        self.node_features = torch.cat((self.node_features, leaf_vector), 0)
+        if self.normalize_embed:
+            self.node_features = F.normalize(self.node_features, p=2, dim=1)
+
+        # add interested node list and subgraph
+        # remove supersource nodes (i.e., nodes without in-degree 0)
+        interested_node_set = set(train_node_ids) - set([self.root])
+        self.node_list = list(interested_node_set)
+
+        # build node2pos, node2nbs, node2eRdge
+        self.node2pos, self.node2edge = {}, {}
+        self.node2parents, self.node2children, self.node2nbs = {}, defaultdict(set), {self.pseudo_leaf_node: []}
+        for node in set(train_node_ids):
+            parents = set(self.core_subgraph.predecessors(node))
+            children = set(self.core_subgraph.successors(node))
+            if len(children) > 1:
+                children = [i for i in children if i != self.pseudo_leaf_node]
+            node_pos_edges = [(pre, suc) for pre in parents for suc in children if pre != suc]
+            self.node2edge[node] = set(self.core_subgraph.in_edges(node)).union(set(self.core_subgraph.out_edges(node)))
+            self.node2pos[node] = node_pos_edges
+            self.node2parents[node] = parents
+            self.node2children[node] = children
+            self.node2nbs[node] = parents.union(children)
+        self.node2nbs[self.root] = set(
+            [n for n in self.core_subgraph.successors(self.root) if n != self.pseudo_leaf_node])
+
+        self.valid_node_list = graph_dataset.validation_node_ids
+        holdout_subgraph = self._get_holdout_subgraph(graph_dataset.train_node_ids + graph_dataset.validation_node_ids)
+        self.valid_node2pos = self._find_insert_posistion(graph_dataset.validation_node_ids, holdout_subgraph)
+
+        self.test_node_list = graph_dataset.test_node_ids
+        holdout_subgraph = self._get_holdout_subgraph(graph_dataset.train_node_ids + graph_dataset.test_node_ids)
+        self.test_node2pos = self._find_insert_posistion(graph_dataset.test_node_ids, holdout_subgraph)
+        # used for sampling negative positions during train/validation stage
+        self.pointer = 0
+        self.all_nodes = list(self.core_subgraph.nodes())
+        random.shuffle(self.all_nodes)
+
+        self.all_edges = list(self._get_candidate_positions(self.core_subgraph))
+        self.edge2dist = {(u, v): nx.shortest_path_length(self.core_subgraph, u, v) for (u, v) in self.all_edges}
+        random.shuffle(self.all_edges)
+
+        # used for caching local subgraphs
+        self.cache = {}  # if g = self.cache[anchor_node], then g is the egonet centered on the anchor_node
+        self.cache_counter = {}  # if n = self.cache[anchor_node], then n is the number of times you used this cache
+
+        self.node2root_path = self._get_path_to_root()
+
+        end = time.time()
+        print(f"Finish loading dataset ({end - start} seconds)")
+
+    def __getitem__(self, idx):
+        """ Generate an data instance based on train/validation/test mode.
+
+        One data instance is a list of (anchor_egonet, query_node_feature, label) triplets.
+
+        If self.sampling_mode == 0:
+            This list may contain more than one triplets with label = 1
+        If self.sampling_mode == 1:
+            This list contain one and ONLY one triplet with label = 1, others have label = 0
+        """
+        res = []
+        query_node = self.node_list[idx]
+
+        # generate positive triplet(s)
+        """if self.sampling_mode == 0:
+            pos_positions = self.node2pos[query_node]
+            if len(pos_positions) > self.max_pos_size and self.mode == 'train':
+                pos_positions = random.sample(pos_positions, k=self.max_pos_size)
+            for u in pos_positions:
+                u_egonet = self._get_subgraph_and_node_pair(query_node, u)
+                u_path, lens = self._get_edge_node_path(query_node, u)
+                res.append([u, u_egonet, u_path, lens, query_node, 1])
+        elif self.sampling_mode > 0:
+            u = random.choice(self.node2pos[query_node])
+            u_egonet = self._get_subgraph_and_node_pair(query_node, u)
+            u_path, lens = self._get_edge_node_path(query_node, u)
+            res.append([u, u_egonet, u_path, lens, query_node, 1])
+
+        # select negative parents
+        negative_size = len(res) if self.negative_size == -1 else self.negative_size
+        negative_anchors = self._get_negative_anchors(query_node, negative_size)
+"""
+        if self.sampling_mode == 0:
+            pos_positions = self.node2pos[query_node]
+            if len(pos_positions) > self.max_pos_size and self.mode == 'train':
+                pos_positions = random.sample(pos_positions, k=self.max_pos_size)
+            for u, v in pos_positions:
+                u_egonet = self._get_subgraph_and_node_pair(query_node, u)
+                u_path, lens = self._get_edge_node_path(query_node, u)
+                res.append([u, v,  u_egonet, u_path, lens, query_node, 1])
+        elif self.sampling_mode > 0:
+            u, v = random.choice(self.node2pos[query_node])
+            u_egonet = self._get_subgraph_and_node_pair(query_node, u)
+            u_path, lens = self._get_edge_node_path(query_node, u)
+            res.append([u, v, u_egonet, u_path, lens, query_node, 1])
+
+        # select negative parents
+        negative_size = len(res) if self.negative_size == -1 else self.negative_size
+        negative_anchors = self._get_negative_anchors(query_node, negative_size)
+
+        # generate negative triplets
+        for u, v in negative_anchors:
+            u_egonet = self._get_subgraph_and_node_pair(query_node, u)
+            u_path, lens = self._get_edge_node_path(query_node, u)
+            res.append([u, v, u_egonet, u_path, lens, query_node, 0])
+
+        """
+        # generate negative triplets
+        for u in negative_anchors:
+            u_egonet = self._get_subgraph_and_node_pair(query_node, u)
+            u_path, lens = self._get_edge_node_path(query_node, u)
+            res.append([u, u_egonet, u_path, lens, query_node, 0])"""
+
+        return tuple(res)
+
+    def _get_negative_anchors(self, query_node, negative_size):
+        if self.sampling_mode == 0:
+            return self._get_at_most_k_negatives(query_node, negative_size)
+        elif self.sampling_mode == 1:
+            return self._get_exactly_k_negatives(query_node, negative_size)
+
+    def _get_at_most_k_negatives(self, query_node, negative_size):
+        """ Generate AT MOST negative_size samples for the query node
+        """
+        """if self.pointer == 0:
+            random.shuffle(self.all_nodes)
+
+        while True:
+            negatives = [ele for ele in self.all_nodes[self.pointer: self.pointer + negative_size] if
+                         ele not in self.node2pos[query_node]]
+            if len(negatives) > 0:
+                break
+            self.pointer += negative_size
+            if self.pointer >= len(self.all_nodes):
+                self.pointer = 0
+
+        return negatives"""
+        if self.pointer == 0:
+            random.shuffle(self.all_edges)
+
+        while True:
+            negatives = [ele for ele in self.all_edges[self.pointer: self.pointer + negative_size] if
+                         ele not in self.node2pos[query_node] and ele not in self.node2edge[query_node]]
+            if len(negatives) > 0:
+                break
+            self.pointer += negative_size
+            if self.pointer >= len(self.all_edges):
+                self.pointer = 0
+
+        return negatives
+
+    def _get_exactly_k_negatives(self, query_node, negative_size, ignore=[]):
+        """ Generate EXACTLY negative_size samples for the query node
+        """
+        """if self.pointer == 0:
+            random.shuffle(self.all_nodes)
+
+        negatives = []
+        while len(negatives) != negative_size:
+            n_lack = negative_size - len(negatives)
+            negatives.extend([ele for ele in self.all_nodes[self.pointer: self.pointer + n_lack] if ele not in self.node2pos[query_node] and ele not in ignore])
+            self.pointer += n_lack
+            if self.pointer >= len(self.all_nodes):
+                self.pointer = 0
+                random.shuffle(self.all_nodes)
+        if len(negatives) > negative_size:
+            negatives = negatives[:negative_size]
+
+        return negatives"""
+        if self.pointer == 0:
+            random.shuffle(self.all_edges)
+
+        negatives = []
+        while len(negatives) != negative_size:
+            n_lack = negative_size - len(negatives)
+            negatives.extend([ele for ele in self.all_edges[self.pointer: self.pointer + n_lack] if
+                                  ele not in self.node2pos[query_node] and ele not in self.node2edge[query_node] and ele not in ignore])
+            self.pointer += n_lack
+            if self.pointer >= len(self.all_edges):
+                self.pointer = 0
+                random.shuffle(self.all_edges)
         if len(negatives) > negative_size:
             negatives = negatives[:negative_size]
 

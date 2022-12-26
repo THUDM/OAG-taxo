@@ -1,33 +1,20 @@
 {
-    "name": "ExpanMatchModelTMN",
+    "name": "MatchModel",
     "n_gpu": 1,
-    "data_path": "data/SemEval-Noun/wordnet_noun.fasttext_mode4.pickle.bin",
-    "mode": "r",
+    "data_path": "/home/ayw19/taxoenrich/data/Data/Artificial Intelligence.pickle.bin",
+    "mode": "rps",
     "arch": {
-        "type": "ExpanMatchModel",
-        "trainer": "TrainerTExpan",
+        "type": "BaseMatch",
+        "trainer": "TrainerB",
         "args": {
-            "propagation_method": "PGAT",
-            "readout_method": "WMR",
-            "matching_method": "BIM",
-            "k": 5,
-            "in_dim": 300,
-            "hidden_dim": 300,
-            "out_dim": 300,
-            "pos_dim": 50,
-            "num_layers": 1,
-            "heads": [4, 1],
-            "feat_drop": 0.1, 
-            "attn_drop": 0.1,
-            "hidden_drop": 0.1,
-            "out_drop": 0.1
+
         }
     },
     "train_data_loader": {
-        "type": "TaxoExpanDataLoader",
+        "type": "UnifiedDataLoader",
         "args":{
             "sampling_mode": 1,
-            "batch_size": 128,
+            "batch_size": 2,
             "negative_size": 31,
             "max_pos_size": 100,
             "expand_factor": 40,
@@ -59,16 +46,13 @@
         }
     },
     "trainer": {
-        "l1": 1.0,
-        "l2": 1.0,
-        "l3": 1.0,
-        "epochs": 100,
+        "epochs": 50,
         "test_batch_size": 4096,
 
-        "save_dir": "data/saved/Noun/",
+        "save_dir": "./experiments/mag_cs_baseline/",
         "save_period": 20,
         "verbosity": 2,
-        
+
         "monitor": "min val_macro_mr",
         "early_stop": 10,
         "grad_clip": -1,

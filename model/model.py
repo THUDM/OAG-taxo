@@ -129,7 +129,33 @@ class AbstractGraphModel(nn.Module):
         return hgu, hgv
 
 
+class BaseMatch(BaseModel):
+    """
+        Model Used For Baseline Bilinear Model On Completion Task
+        Only use query embedding, parent embedding and children embedding for match
+    """
+    def __init__(self, mode):
+        super(BaseMatch, self).__init__()
+        self.model = BIM(768, 768)
+
+    def forward(self, q, e1, e2):
+        q = self.embedding(q)
+        e1 = self.embedding(e1)
+        e2 = self.embedding(e2)
+        return self.model(e1, e2, q)
+
+    def score(self, q, e1, e2):
+        return self.model(e1, e2, q)
+
+    def forward_encoders(self, us, vs, sib, bgu, bgv, bpu, bpv, lens, sib_len):
+        return self.embedding(us), self.embedding(vs), None
+
+
 class MatchModel(BaseModel, AbstractPathModel, AbstractGraphModel):
+    """
+        Model Used For Enrich Model On Completion Task
+        Includes three part: Embedding Part, Attention Part and Match Part
+    """
     def __init__(self, mode, **options):
         print("init match model")
         super(MatchModel, self).__init__()
@@ -220,6 +246,9 @@ class MatchModel(BaseModel, AbstractPathModel, AbstractGraphModel):
 
 
 class ExpanMatchModel(BaseModel, AbstractPathModel, AbstractGraphModel):
+    """
+        Model Used by Expan model on Expansion Task
+    """
     def __init__(self, mode, **options):
         print("init expan match model")
         super(ExpanMatchModel, self).__init__()
@@ -240,12 +269,14 @@ class ExpanMatchModel(BaseModel, AbstractPathModel, AbstractGraphModel):
 
         if options['matching_method'] == "NTN":
             self.match = RawNTN(self.l_dim, self.r_dim, options["k"])
-        if options['matching_method'] == "BIM":
+        if options['matching_method'] == "RBIM":
             self.match = RawBIM(self.l_dim, self.r_dim)
         if options['matching_method'] == "MLP":
             self.match = RawMLP(self.l_dim, self.r_dim, 100, options["k"])
         elif options['matching_method'] == "ARB":
             self.match = RawArborist(self.l_dim, self.r_dim, options["k"])
+        elif options['matching_method'] == "BIM":
+            self.match = BIM(self.l_dim, self.r_dim)
         else:
             assert f"Unacceptable Matching Method: {options['matching_method']}"
 
@@ -271,3 +302,67 @@ class ExpanMatchModel(BaseModel, AbstractPathModel, AbstractGraphModel):
         ur = self.forward_encoders(us, graphs, paths, lens)
         scores = self.match(ur, qf)
         return scores
+
+
+class ExpanTMatchModel(BaseModel, AbstractPathModel, AbstractGraphModel):
+    """
+        Model Used For Expan on Completion task
+    """
+    def __init__(self, mode, **options):
+        print("init expan match model")
+        super(ExpanTMatchModel, self).__init__()
+        self.options = options
+        self.mode = mode
+
+        l_dim = 0
+        if 'r' in self.mode:
+            l_dim += options["in_dim"]
+        if 'g' in self.mode:
+            l_dim += options["out_dim"]
+            AbstractGraphModel.init(self, **options)
+        if 'p' in self.mode:
+            l_dim += options["out_dim"]
+            AbstractPathModel.init(self, **options)
+        self.l_dim = l_dim
+        self.r_dim = options["in_dim"]
+
+        if options['matching_method'] == "NTN":
+            self.match = RawNTN(self.l_dim, self.r_dim, options["k"])
+        if options['matching_method'] == "RBIM":
+            self.match = RawBIM(self.l_dim, self.r_dim)
+        if options['matching_method'] == "MLP":
+            self.match = RawMLP(self.l_dim, self.r_dim, 100, options["k"])
+        elif options['matching_method'] == "ARB":
+            self.match = RawArborist(self.l_dim, self.r_dim, options["k"])
+        elif options['matching_method'] == "BIM":
+            self.match = BIM(self.l_dim, self.r_dim)
+        else:
+            assert f"Unacceptable Matching Method: {options['matching_method']}"
+
+    def forward_encoders(self, u=None, gu=None, pu=None, lens=None):
+        ur = []
+        if 'r' in self.mode:
+            hu = self.embedding(u.to(self.device))
+            ur.append(hu)
+        if 'g' in self.mode:
+            gu = dgl.batch(gu)
+            hgu = self.encode_parent_graph(gu)
+            ur.append(hgu)
+        if 'p' in self.mode:
+            pu = pu.to(self.device)
+            lens = lens.to(self.device)
+            hpu = self.encode_parent_path(pu, lens)
+            ur.append(hpu)
+        ur = torch.cat(ur, -1)
+        return ur
+
+    def forward(self, q, us, vs, graphs, paths, lens):
+        qf = self.embedding(q.to(self.device))
+        ur = self.forward_encoders(us, graphs, paths, lens)
+        vr = self.embedding(vs.to(self.device))
+        scores = self.match(ur, vr, qf)
+        return scores
+
+    def embedding_fuc(self, q):
+        return self.embedding(q.to(self.device))
+

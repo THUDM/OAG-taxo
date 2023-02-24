@@ -15,7 +15,7 @@ Install requirements.txt via ```pip install -r requirements.txt``` (test with Py
 
 ### Data Preparation
 
-If you want to try the dataset of Mag-CS, Mag-full, and our own dataset on these models, we have prepared the dataset [here](https://drive.google.com/drive/folders/1Yl5pQKCGytJPgxghs-M4kVzf7bJV200c?usp=sharing)
+If you want to try the dataset of Mag-CS, Mag-full, and our own dataset on these models, we have prepared the dataset [here](https://drive.google.com/drive/folders/1Yl5pQKCGytJPgxghs-M4kVzf7bJV200c?usp=sharing). You can put MAG-CS/MAG-full/OAG-AI folder in the _data_ directory in the project root directory.
 
 If you want to try other datasets, you can follow the methods mentioned in Taxoenrich. In short, you need to prepare the x.terms file, x.taxo file. Next, run the embedding_generation.py and generate_dataset_binary.py, then you can get the x.bin file for training.
 

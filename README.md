@@ -13,6 +13,12 @@ You need to prepare an environment of cuda10 + dgl0.4.0. It can be only used on 
 
 Install requirements.txt via ```pip install -r requirements.txt``` (test with Python 3.7)
 
+Run the following command before running any methods.
+
+```bash
+export PYTHONPATH="`pwd`:$PYTHONPATH"
+```
+
 ### Data Preparation
 
 If you want to try the dataset of Mag-CS, Mag-full, and our own dataset on these models, we have prepared the dataset [here](https://drive.google.com/drive/folders/1Yl5pQKCGytJPgxghs-M4kVzf7bJV200c?usp=sharing). You can put MAG-CS/MAG-full/OAG-AI folder in the _data_ directory in the project root directory.

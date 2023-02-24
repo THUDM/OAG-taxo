@@ -11,7 +11,7 @@ This work is mainly based on the work of [TaxoEnrich](https://github.com/minhaoJ
 
 You need to prepare an environment of cuda10 + dgl0.4.0. It can be only used on the Graphics Card below 30.
 
-Install requirements.txt via ```pip install -r requirements.txt```
+Install requirements.txt via ```pip install -r requirements.txt``` (test with Python 3.7)
 
 ### Data Preparation
 

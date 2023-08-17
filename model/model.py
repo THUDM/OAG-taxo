@@ -5,6 +5,7 @@ import dgl
 from base import BaseModel
 from .model_zoo import *
 
+
 class AbstractPathModel(nn.Module):
     def __init__(self):
         super(AbstractPathModel, self).__init__()
@@ -13,13 +14,18 @@ class AbstractPathModel(nn.Module):
         self.hidden_size = options['out_dim']
         in_dim = options['in_dim']
         out_dim = options['out_dim']
-        self.p_lstm = nn.LSTM(input_size=in_dim, hidden_size=self.hidden_size, batch_first=True)
-        self.c_lstm = nn.LSTM(input_size=in_dim, hidden_size=self.hidden_size, batch_first=True)
-        self.p_control = nn.Sequential(nn.Linear(in_dim, out_dim, bias=False), nn.ReLU())
-        self.c_control = nn.Sequential(nn.Linear(in_dim, out_dim, bias=False), nn.ReLU())
+        self.p_lstm = nn.LSTM(
+            input_size=in_dim, hidden_size=self.hidden_size, batch_first=True)
+        self.c_lstm = nn.LSTM(
+            input_size=in_dim, hidden_size=self.hidden_size, batch_first=True)
+        self.p_control = nn.Sequential(
+            nn.Linear(in_dim, out_dim, bias=False), nn.ReLU())
+        self.c_control = nn.Sequential(
+            nn.Linear(in_dim, out_dim, bias=False), nn.ReLU())
 
     def init_hidden(self, batch_size, device):
-        hidden = (torch.randn(1, batch_size, self.hidden_size).to(device), torch.randn(1, batch_size, self.hidden_size).to(device))
+        hidden = (torch.randn(1, batch_size, self.hidden_size).to(
+            device), torch.randn(1, batch_size, self.hidden_size).to(device))
         return hidden
 
     def encode_parent_path(self, p, lens):
@@ -27,7 +33,8 @@ class AbstractPathModel(nn.Module):
         hidden = self.init_hidden(batch_size, self.device)
         p = self.embedding(p)
         c = self.p_control(p[:, 0, :]).view(batch_size, 1, -1)
-        X = torch.nn.utils.rnn.pack_padded_sequence(p, lens, batch_first=True, enforce_sorted=False)
+        X = torch.nn.utils.rnn.pack_padded_sequence(
+            p, lens, batch_first=True, enforce_sorted=False)
         X, hidden = self.p_lstm(X, hidden)
         X, _ = torch.nn.utils.rnn.pad_packed_sequence(X, batch_first=True)
         X = (c*X).max(dim=1)[0]
@@ -38,7 +45,8 @@ class AbstractPathModel(nn.Module):
         hidden = self.init_hidden(batch_size, self.device)
         p = self.embedding(p)
         c = self.c_control(p[:, 0, :]).view(batch_size, 1, -1)
-        X = torch.nn.utils.rnn.pack_padded_sequence(p, lens, batch_first=True, enforce_sorted=False)
+        X = torch.nn.utils.rnn.pack_padded_sequence(
+            p, lens, batch_first=True, enforce_sorted=False)
         X, hidden = self.c_lstm(X, hidden)
         X, _ = torch.nn.utils.rnn.pad_packed_sequence(X, batch_first=True)
         X = (c*X).max(dim=1)[0]
@@ -134,6 +142,7 @@ class BaseMatch(BaseModel):
         Model Used For Baseline Bilinear Model On Completion Task
         Only use query embedding, parent embedding and children embedding for match
     """
+
     def __init__(self, mode):
         super(BaseMatch, self).__init__()
         self.model = BIM(768, 768)
@@ -156,6 +165,7 @@ class MatchModel(BaseModel, AbstractPathModel, AbstractGraphModel):
         Model Used For Enrich Model On Completion Task
         Includes three part: Embedding Part, Attention Part and Match Part
     """
+
     def __init__(self, mode, **options):
         print("init match model")
         super(MatchModel, self).__init__()
@@ -206,7 +216,7 @@ class MatchModel(BaseModel, AbstractPathModel, AbstractGraphModel):
         attn_score = F.softmax(attn_score, dim=-1)
         h_attn = torch.einsum('ij, ijk -> ik', attn_score, hs)
         return h_attn
-    
+
     def forward_encoders(self, u=None, v=None, sibling=None, gu=None, gv=None, pu=None, pv=None, lens=None, sibling_len=None):
         ur, vr = [], []
         sr = None
@@ -236,7 +246,7 @@ class MatchModel(BaseModel, AbstractPathModel, AbstractGraphModel):
         qf = self.bert_embedding(q.to(self.device))
         ur, vr, sr = self.forward_encoders(*inputs)
         if sr == None:
-            scores =  self.match(ur, vr, qf)
+            scores = self.match(ur, vr, qf)
         else:
             # print("doing attention")
             hs, sib_len = sr
@@ -249,6 +259,7 @@ class ExpanMatchModel(BaseModel, AbstractPathModel, AbstractGraphModel):
     """
         Model Used by Expan model on Expansion Task
     """
+
     def __init__(self, mode, **options):
         print("init expan match model")
         super(ExpanMatchModel, self).__init__()
@@ -308,6 +319,7 @@ class ExpanTMatchModel(BaseModel, AbstractPathModel, AbstractGraphModel):
     """
         Model Used For Expan on Completion task
     """
+
     def __init__(self, mode, **options):
         print("init expan match model")
         super(ExpanTMatchModel, self).__init__()
@@ -366,3 +378,63 @@ class ExpanTMatchModel(BaseModel, AbstractPathModel, AbstractGraphModel):
     def embedding_fuc(self, q):
         return self.embedding(q.to(self.device))
 
+
+class ExpanMatchSequenceModel(BaseModel, AbstractPathModel, AbstractGraphModel):
+    def __init__(self, mode, **options):
+        print("init expan match model")
+        super(ExpanMatchModel, self).__init__()
+        self.options = options
+        self.mode = mode
+
+        l_dim = 0
+        if 'r' in self.mode:
+            l_dim += options["in_dim"]
+        if 'g' in self.mode:
+            l_dim += options["out_dim"]
+            AbstractGraphModel.init(self, **options)
+        if 'p' in self.mode:
+            l_dim += options["out_dim"]
+            AbstractPathModel.init(self, **options)
+        self.l_dim = l_dim
+        self.r_dim = options["in_dim"]
+
+        if options['matching_method'] == "NTN":
+            self.match = RawNTN(self.l_dim, self.r_dim, options["k"])
+        if options['matching_method'] == "BIM":
+            self.match = RawBIM(self.l_dim, self.r_dim)
+        if options['matching_method'] == "MLP":
+            self.match = RawMLP(self.l_dim, self.r_dim, 100, options["k"])
+        elif options['matching_method'] == "ARB":
+            self.match = RawArborist(self.l_dim, self.r_dim, options["k"])
+        else:
+            assert f"Unacceptable Matching Method: {options['matching_method']}"
+
+        self.retrieved_dic = json.load('./data/retrieved-tensor')
+
+    def forward_encoders(self, u=None, gu=None, pu=None, lens=None):
+        ur = []
+        if 'r' in self.mode:
+            hu = self.embedding(u.to(self.device))
+            ur.append(hu)
+        if 'g' in self.mode:
+            gu = dgl.batch(gu)
+            hgu = self.encode_parent_graph(gu)
+            ur.append(hgu)
+        if 'p' in self.mode:
+            pu = pu.to(self.device)
+            lens = lens.to(self.device)
+            hpu = self.encode_parent_path(pu, lens)
+            ur.append(hpu)
+        ur = torch.cat(ur, -1)
+        return ur
+
+    def retrieved_query(query_node):
+        return self.retrieved_dic[query_node]
+
+    def forward(self, q, us, graphs, paths, lens):
+        qf = self.embedding(q.to(self.device))
+        ur = self.forward_encoders(us, graphs, paths, lens)
+        qf = torch.cat((qf, retrieved_query(q)), 1)
+        ur = torch.cat((ur, retrieved_query(us)), 1)
+        scores = self.match(ur, qf)
+        return scores

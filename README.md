@@ -21,7 +21,7 @@ export PYTHONPATH="`pwd`:$PYTHONPATH"
 
 ### Data Preparation
 
-If you want to try the dataset of Mag-CS, Mag-full, and our own dataset on these models, we have prepared the dataset [here](https://drive.google.com/drive/folders/1Yl5pQKCGytJPgxghs-M4kVzf7bJV200c?usp=sharing). You can put MAG-CS/MAG-full/OAG-AI folder in the _data_ directory in the project root directory.
+If you want to try the dataset of Mag-CS [[Aliyun]](https://open-data-set.oss-cn-beijing.aliyuncs.com/oag-benchmark/taxonomy-expansion/MAG_CS.zip), Mag-full, and OAG-AI [[Aliyun]](https://open-data-set.oss-cn-beijing.aliyuncs.com/oag-benchmark/taxonomy-expansion/Artificial%20Intelligence.zip) on these models, we have prepared the dataset on [Google Drive](https://drive.google.com/drive/folders/1Yl5pQKCGytJPgxghs-M4kVzf7bJV200c?usp=sharing). You can put MAG-CS/MAG-full/OAG-AI folder in the _data_ directory in the project root directory.
 
 If you want to try other datasets, you can follow the methods mentioned in Taxoenrich. In short, you need to prepare the x.terms file, x.taxo file. Next, run the embedding_generation.py and generate_dataset_binary.py, then you can get the x.bin file for training.
 
@@ -48,7 +48,7 @@ We provide inference methods for the Artificial Intelligence dataset from pre-tr
 python inner_infer.py --resume your_model_path_here --config config_files/MAG-CS/config.test.enrich.json
 ```
 
-We provide our pre-trained models for you [here](https://drive.google.com/drive/folders/18JacRQeLDAzYA8fA3jSmUlU9tbBA5Mhp?usp=sharing)
+We provide our pre-trained models for you [here](https://open-data-set.oss-cn-beijing.aliyuncs.com/oag-benchmark/taxonomy-expansion/Model-20230608T120014Z-001.zip)
 
 ### Config File Prepared
 For example, in ./config_file/mag_cs, we introduce each file's usage:

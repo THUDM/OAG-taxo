@@ -62,9 +62,6 @@ config.valid.X.json means the corresponding infer config file for the X method a
 
 If you do not have enough GPU memory for training, decrease the batch size and the number of negative samples.
 
-### Report PDF
-Share my report [here](https://drive.google.com/file/d/10lrXlKZ5pPvr40ea7XEm5_G4bU2qShOp/view?usp=sharing). 
-
 ### References
 [1] Jiaming Shen, Zhihong Shen, Chenyan Xiong, Chi Wang, Kuansan Wang and Jiawei Han ”TaxoExpan: Self-supervised Taxonomy Expansion with Position-Enhanced Graph Neural Network”, in Proc. 2020 Int. World Wide Web Conf. (WWW’20), Taipei, Taiwan, Apr. 2020.
 
